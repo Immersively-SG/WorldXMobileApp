@@ -5,16 +5,18 @@ import {
   StyleSheet,
   Image,
   FlatList,
-  PixelRatio,
+  TouchableOpacity,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { MenuIconsDataArray } from "./homescreenmenudata";
 import { useEffect } from "react";
 import { WorldXLogo } from "../../utility/backgroundimage/logos";
 import { TouchableIconLink } from "../../utility/touchable/touchableiconLink";
+import * as Clipboard from "expo-clipboard";
 
 export const HomeScreen = ({ navigation }) => {
   const FADE_IN_DURATION = 1000;
+  const METAMASK_ID = "sdf56adf567ag5a5";
 
   //if user presses back on this screen, exit app
   useEffect(
@@ -24,6 +26,10 @@ export const HomeScreen = ({ navigation }) => {
       }),
     [navigation]
   );
+
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(METAMASK_ID);
+  };
 
   return (
     <FlatList
@@ -151,9 +157,9 @@ export const HomeScreen = ({ navigation }) => {
                     numberOfLines={1}
                     style={[styles.text, { textAlign: "right" }]}
                   >
-                    dsfdha5dr656d55ksfsdfsdfsdj5g
+                    {METAMASK_ID}
                   </Text>
-                  <View
+                  <TouchableOpacity
                     style={[
                       styles.bordered,
                       {
@@ -164,6 +170,7 @@ export const HomeScreen = ({ navigation }) => {
                         borderRadius: 10,
                       },
                     ]}
+                    onPress={copyToClipboard}
                   >
                     <Image
                       source={require("../../../assets/WorldX/Icons/UI/Clipboard.png")}
@@ -176,7 +183,7 @@ export const HomeScreen = ({ navigation }) => {
                         },
                       ]}
                     ></Image>
-                  </View>
+                  </TouchableOpacity>
                 </View>
                 <View style={[{ flex: 1 }]}>
                   <Text style={[styles.text, styles.textBig, styles.textBold]}>

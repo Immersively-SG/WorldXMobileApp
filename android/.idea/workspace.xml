@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c7f6bf0d-f2f0-4ab3-8597-7a0dd29fc1de" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../components/screens/homescreen/homescreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../components/screens/homescreen/homescreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/utility/touchableicon/touchableiconLink.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
     </list>
