@@ -11,7 +11,7 @@ import * as Animatable from "react-native-animatable";
 import { MenuIconsDataArray } from "./homescreenmenudata";
 import { useEffect } from "react";
 import { WorldXLogo } from "../../utility/backgroundimage/logos";
-import { TouchableIconLink } from "../../utility/touchableicon/touchableiconLink";
+import { TouchableIconLink } from "../../utility/touchable/touchableiconLink";
 
 export const HomeScreen = ({ navigation }) => {
   const FADE_IN_DURATION = 1000;
@@ -39,7 +39,7 @@ export const HomeScreen = ({ navigation }) => {
             duration={FADE_IN_DURATION}
             delay={(index + 1) * 300 + FADE_IN_DURATION}
             style={[
-              { flex: 1, justifyContent: "center" },
+              { flex: 1, justifyContent: "center", aspectRatio: 1 },
               styles.container,
               styles.bordered,
             ]}
@@ -118,12 +118,17 @@ export const HomeScreen = ({ navigation }) => {
             >
               <View style={[{ flex: 1 }, styles.container]}>
                 <View style={[{ flex: 1 }]}>
-                  <View style={[{ aspectRatio: 1 }, styles.bordered]}>
+                  <View
+                    style={[
+                      { aspectRatio: 1, height: "70%", width: "70%" },
+                      styles.bordered,
+                    ]}
+                  >
                     <Image
                       source={require("../../../assets/WorldX/Icons/passport.png")}
                       style={{
-                        height: 100,
-                        width: 100,
+                        height: "100%",
+                        width: "100%",
                         resizeMode: "contain",
                         aspectRatio: 1,
                       }}
@@ -135,11 +140,50 @@ export const HomeScreen = ({ navigation }) => {
                   </View>
                 </View>
               </View>
-              <View style={[{ flex: 1 }]}>
-                <Text style={[styles.text, styles.textBig, styles.textBold]}>
-                  200
-                </Text>
-                <Text style={styles.text}>LoyaltyPoints</Text>
+              <View style={[{ flex: 1 }, styles.container]}>
+                <View
+                  style={[
+                    { flex: 1, alignItems: "center", width: "70%" },
+                    styles.flexRow,
+                  ]}
+                >
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.text, { textAlign: "right" }]}
+                  >
+                    dsfdha5dr656d55ksfsdfsdfsdj5g
+                  </Text>
+                  <View
+                    style={[
+                      styles.bordered,
+                      {
+                        height: "30%",
+                        width: "30%",
+                        aspectRatio: 1,
+                        borderWidth: 1,
+                        borderRadius: 10,
+                      },
+                    ]}
+                  >
+                    <Image
+                      source={require("../../../assets/WorldX/Icons/UI/Clipboard.png")}
+                      style={[
+                        {
+                          height: "100%",
+                          width: "100%",
+                          aspectRatio: 1,
+                          resizeMethod: "contain",
+                        },
+                      ]}
+                    ></Image>
+                  </View>
+                </View>
+                <View style={[{ flex: 1 }]}>
+                  <Text style={[styles.text, styles.textBig, styles.textBold]}>
+                    200
+                  </Text>
+                  <Text style={styles.text}>Loyalty Points</Text>
+                </View>
               </View>
             </View>
           </Animatable.View>
@@ -175,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   textBig: {
-    fontSize: 30,
+    fontSize: 50,
   },
   textBold: {
     fontWeight: "bold",

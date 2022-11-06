@@ -1,4 +1,4 @@
-import { TouchableOpacity, Image, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity, Image, StyleSheet, Text } from "react-native";
 
 export const TouchableIconLink = (props) => {
   return (
@@ -21,12 +21,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   image: {
+    flex: 3,
     width: "100%",
-    height: undefined,
+    height: "100%",
     aspectRatio: 1,
     resizeMode: "stretch",
   },
   text: {
+    flex: 1,
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
