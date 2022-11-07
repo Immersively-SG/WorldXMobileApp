@@ -2,7 +2,6 @@ import {
   Text,
   View,
   BackHandler,
-  StyleSheet,
   Image,
   FlatList,
   TouchableOpacity,
@@ -13,6 +12,7 @@ import { useEffect } from "react";
 import { WorldXLogo } from "../../utility/backgroundimage/logos";
 import { TouchableIconLink } from "../../utility/touchable/touchableiconLink";
 import * as Clipboard from "expo-clipboard";
+import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
 
 export const HomeScreen = ({ navigation }) => {
   const FADE_IN_DURATION = 1000;
@@ -46,8 +46,8 @@ export const HomeScreen = ({ navigation }) => {
             delay={(index + 1) * 300 + FADE_IN_DURATION}
             style={[
               { flex: 1, justifyContent: "center", aspectRatio: 1 },
-              styles.container,
-              styles.bordered,
+              worldxstyles.container,
+              worldxstyles.bordered,
             ]}
           >
             <TouchableIconLink
@@ -83,7 +83,13 @@ export const HomeScreen = ({ navigation }) => {
                 },
               ]}
             ></Image>
-            <Text style={[styles.text, styles.textBold, styles.textCenter]}>
+            <Text
+              style={[
+                worldxstyles.text,
+                worldxstyles.textBold,
+                worldxstyles.textCenter,
+              ]}
+            >
               Gateway App
             </Text>
           </Animatable.View>
@@ -96,7 +102,7 @@ export const HomeScreen = ({ navigation }) => {
             delay={1000}
             style={[
               { flex: 1 },
-              styles.container,
+              worldxstyles.container,
 
               { marginBottom: 0, justifyContent: "flex-end" },
             ]}
@@ -104,8 +110,8 @@ export const HomeScreen = ({ navigation }) => {
             <Animatable.Text
               useNativeDriver={true}
               style={[
-                styles.text,
-                styles.textBold,
+                worldxstyles.text,
+                worldxstyles.textBold,
                 {
                   alignSelf: "stretch",
                   borderStyle: "solid",
@@ -118,16 +124,16 @@ export const HomeScreen = ({ navigation }) => {
             <View
               style={[
                 { flex: 1, alignSelf: "stretch", alignItems: "center" },
-                styles.bordered,
-                styles.flexRow,
+                worldxstyles.bordered,
+                worldxstyles.flexRow,
               ]}
             >
-              <View style={[{ flex: 1 }, styles.container]}>
+              <View style={[{ flex: 1 }, worldxstyles.container]}>
                 <View style={[{ flex: 1 }]}>
                   <View
                     style={[
                       { aspectRatio: 1, height: "70%", width: "70%" },
-                      styles.bordered,
+                      worldxstyles.bordered,
                     ]}
                   >
                     <Image
@@ -140,28 +146,34 @@ export const HomeScreen = ({ navigation }) => {
                       }}
                     ></Image>
                   </View>
-                  <View style={[styles.flexRow, { alignSelf: "flex-start" }]}>
-                    <Text style={[styles.text, styles.alignBottom]}>Lv</Text>
-                    <Text style={[styles.text, styles.textMedium]}>10</Text>
+                  <View
+                    style={[worldxstyles.flexRow, { alignSelf: "flex-start" }]}
+                  >
+                    <Text style={[worldxstyles.text, worldxstyles.alignBottom]}>
+                      Lv
+                    </Text>
+                    <Text style={[worldxstyles.text, worldxstyles.textMedium]}>
+                      10
+                    </Text>
                   </View>
                 </View>
               </View>
-              <View style={[{ flex: 1 }, styles.container]}>
+              <View style={[{ flex: 1 }, worldxstyles.container]}>
                 <View
                   style={[
                     { flex: 1, alignItems: "center", width: "70%" },
-                    styles.flexRow,
+                    worldxstyles.flexRow,
                   ]}
                 >
                   <Text
                     numberOfLines={1}
-                    style={[styles.text, { textAlign: "right" }]}
+                    style={[worldxstyles.text, { textAlign: "right" }]}
                   >
                     {METAMASK_ID}
                   </Text>
                   <TouchableOpacity
                     style={[
-                      styles.bordered,
+                      worldxstyles.bordered,
                       {
                         height: "30%",
                         width: "30%",
@@ -186,10 +198,16 @@ export const HomeScreen = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
                 <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.text, styles.textBig, styles.textBold]}>
+                  <Text
+                    style={[
+                      worldxstyles.text,
+                      worldxstyles.textBig,
+                      worldxstyles.textBold,
+                    ]}
+                  >
                     200
                   </Text>
-                  <Text style={styles.text}>Loyalty Points</Text>
+                  <Text style={worldxstyles.text}>Loyalty Points</Text>
                 </View>
               </View>
             </View>
@@ -200,44 +218,3 @@ export const HomeScreen = ({ navigation }) => {
     ></FlatList>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderStyle: "solid",
-    margin: 20,
-  },
-  bordered: {
-    borderRadius: 20,
-    borderWidth: 3,
-    borderColor: "#ffffff",
-  },
-  flexRow: {
-    flexDirection: "row",
-  },
-  alignBottom: {
-    textAlignVertical: "bottom",
-  },
-  text: {
-    color: "#ffffff",
-  },
-  textMedium: {
-    fontSize: 20,
-  },
-  textBig: {
-    fontSize: 50,
-  },
-  textBold: {
-    fontWeight: "bold",
-  },
-  textCenter: {
-    textAlign: "center",
-  },
-  image: {
-    height: "100%",
-    width: "100%",
-    resizeMethod: "resize",
-    resizeMode: "contain",
-  },
-});

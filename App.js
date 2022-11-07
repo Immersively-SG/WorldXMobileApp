@@ -1,24 +1,31 @@
 import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import * as React from "react";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import { DetailsScreen } from "./components/screens/details/detailscreen.js";
-import { HomeScreen } from "./components/screens/homescreen/homescreen.js";
-import { SplashScreen } from "./components/screens/splashscreen/splashscreen.js";
 
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Splashscreen from "expo-splash-screen";
 import * as Font from "expo-font";
 
+import { SplashScreen } from "./components/screens/splashscreen/splashscreen.js";
+import { MarketplaceScreen } from "./components/screens/marketplace/marketplacescreen.js";
+import { DetailsScreen } from "./components/screens/details/detailscreen.js";
+import { HomeScreen } from "./components/screens/homescreen/homescreen.js";
+import { BottomNavigator } from "./components/navigator/bottomnavigator.js";
+
 Splashscreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const SPLASH_SCREEN_TIME = 2000;
-  const [appIsReady, setAppIsReady] = useState(false);
+  const navigationRef = useNavigationContainerRef();
+  const [currentRouteName, setCurrentRouteName] = useState("");
 
+  const [appIsReady, setAppIsReady] = useState(false);
   //on initial render
   useEffect(() => {
     async function prepare() {
@@ -56,7 +63,13 @@ export default function App() {
 
   return (
     <SafeAreaView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <NavigationContainer theme={MyTheme}>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={MyTheme}
+        onStateChange={async () => {
+          setCurrentRouteName(navigationRef.getCurrentRoute().name);
+        }}
+      >
         <ImageBackground
           source={backgroundImage}
           style={{ width: "100%", height: "100%", resizeMode: "cover" }}
@@ -71,11 +84,15 @@ export default function App() {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Details" component={DetailsScreen} />
 
-            <Stack.Screen name="MarketPlace" component={HomeScreen} />
+            <Stack.Screen name="MarketPlace" component={MarketplaceScreen} />
             <Stack.Screen name="BeThereAndEarn" component={HomeScreen} />
             <Stack.Screen name="MarketTrend" component={HomeScreen} />
             <Stack.Screen name="Settings" component={HomeScreen} />
           </Stack.Navigator>
+          <BottomNavigator
+            currentScreen={currentRouteName}
+            navStateReady={navigationRef?.isReady()}
+          />
         </ImageBackground>
       </NavigationContainer>
     </SafeAreaView>
