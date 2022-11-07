@@ -12,11 +12,13 @@ import Entypo from "@expo/vector-icons/Entypo";
 import * as Splashscreen from "expo-splash-screen";
 import * as Font from "expo-font";
 
+//SCREENS
 import { SplashScreen } from "./components/screens/splashscreen/splashscreen.js";
 import { MarketplaceScreen } from "./components/screens/marketplace/marketplacescreen.js";
 import { DetailsScreen } from "./components/screens/details/detailscreen.js";
 import { HomeScreen } from "./components/screens/homescreen/homescreen.js";
 import { BottomNavigator } from "./components/navigator/bottomnavigator.js";
+import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bethereandearnscreen.js";
 
 Splashscreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
@@ -85,7 +87,10 @@ export default function App() {
             <Stack.Screen name="Details" component={DetailsScreen} />
 
             <Stack.Screen name="MarketPlace" component={MarketplaceScreen} />
-            <Stack.Screen name="BeThereAndEarn" component={HomeScreen} />
+            <Stack.Screen
+              name="BeThereAndEarn"
+              component={BeThereAndEarnScreen}
+            />
             <Stack.Screen name="MarketTrend" component={HomeScreen} />
             <Stack.Screen name="Settings" component={HomeScreen} />
           </Stack.Navigator>
