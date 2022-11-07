@@ -19,7 +19,7 @@ export const BeThereAndEarnScreen = () => {
         latitude: _latitude,
         longitude: _longitude,
       },
-      zoom: 10,
+      zoom: 20,
     });
   };
   useEffect(() => {
@@ -90,9 +90,11 @@ export const BeThereAndEarnScreen = () => {
           { flex: 1 },
         ]}
       >
-        <Text
-          style={worldxstyles.text}
-        >{`${geocode[0].city} , ${geocode[0].country}, ${geocode[0].district}, ${geocode[0].isoCountryCode}, ${geocode[0].name}, ${geocode[0].postalCode}, ${geocode[0].region}, ${geocode[0].street}, ${geocode[0].streetNumber}, ${geocode[0].subregion}, ${geocode[0].timezone}`}</Text>
+        {geocode != null && (
+          <Text
+            style={worldxstyles.text}
+          >{`${geocode[0].city} , ${geocode[0].country}, ${geocode[0].district}, ${geocode[0].isoCountryCode}, ${geocode[0].name}, ${geocode[0].postalCode}, ${geocode[0].region}, ${geocode[0].street}, ${geocode[0].streetNumber}, ${geocode[0].subregion}, ${geocode[0].timezone}`}</Text>
+        )}
       </View>
     </View>
   );
