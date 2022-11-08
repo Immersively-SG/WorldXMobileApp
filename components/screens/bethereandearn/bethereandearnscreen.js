@@ -8,6 +8,7 @@ import { useState, useEffect, createRef } from "react";
 import MapView, { Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import { isPointWithinRadius } from "geolib";
+import * as Animatable from "react-native-animatable";
 
 export const BeThereAndEarnScreen = () => {
   const [location, setLocation] = useState(null);
@@ -15,7 +16,7 @@ export const BeThereAndEarnScreen = () => {
   const [geocode, setGeocode] = useState(null);
   const [expCirclesArray, setExpCirclesArray] = useState(null);
   const [expCirclesDataArray, setExpCirclesDataArray] = useState(null);
-  const [isInExpCircle, setIsInExpCircle] = useState(null);
+  const [isInExpCircle, setIsInExpCircle] = useState(false);
 
   const mapRef = createRef();
   const goToMyLocation = async (_latitude, _longitude) => {
@@ -120,7 +121,12 @@ export const BeThereAndEarnScreen = () => {
   }, [location]);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <Animatable.View
+      useNativeDriver={true}
+      animation="fadeInUp"
+      duration={2000}
+      style={{ flex: 1, justifyContent: "center" }}
+    >
       <View style={[styles.container, { flex: 1, alignSelf: "stretch" }]}>
         <Image
           source={require("../../../assets/WorldX/Logo/worldxlogo.png")}
@@ -149,6 +155,7 @@ export const BeThereAndEarnScreen = () => {
             followsUserLocation={true}
             showsUserLocation={true}
             zoomEnabled={true}
+            loadingEnabled={true}
           >
             {expCirclesArray}
           </MapView>
@@ -177,26 +184,38 @@ export const BeThereAndEarnScreen = () => {
             <Text style={worldxstyles.text}>Waiting...</Text>
           )} */}
           {isInExpCircle ? (
-            <Text style={worldxstyles.text}>You are in a reward circle!</Text>
-          ) : (
-            <Emitter
-              numberOfParticles={50}
-              emissionRate={1}
-              interval={0}
-              particleLife={1500}
-              direction={-90}
-              spread={45}
-              speed={10}
-              autoStart={true}
-              infiniteLoop={true}
-              fromPosition={{ x: 200, y: 0 }}
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "space-around",
+                flexDirection: "row",
+              }}
             >
-              <Text style={worldxstyles.text}>Particle</Text>
-            </Emitter>
+              <Text style={worldxstyles.text}>You are in a reward circle!</Text>
+
+              {/* <Emitter
+                numberOfParticles={50}
+                emissionRate={1}
+                interval={0}
+                particleLife={1500}
+                direction={-90}
+                spread={45}
+                speed={10}
+                autoStart={true}
+                infiniteLoop={true}
+                fromPosition={{ x: 0, y: 0 }}
+              >
+                <Text style={worldxstyles.text}>Particle</Text>
+              </Emitter> */}
+            </View>
+          ) : (
+            <Text style={worldxstyles.text}>
+              You are not in a reward circle!
+            </Text>
           )}
         </View>
       </View>
-    </View>
+    </Animatable.View>
   );
 };
 

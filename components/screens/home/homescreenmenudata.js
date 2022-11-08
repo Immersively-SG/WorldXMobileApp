@@ -12,7 +12,7 @@ export const MenuIconsDataArray = [
   {
     name: "PAY",
     image: require("../../../assets/WorldX/Icons/UI/MarketTrends.png"),
-    screenName: "MarketTrend",
+    screenName: "Pay",
   },
   {
     name: "SETTINGS",

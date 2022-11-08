@@ -13,6 +13,7 @@ import { WorldXLogo } from "../../utility/backgroundimage/logos";
 import { TouchableIconLink } from "../../utility/touchable/touchableiconLink";
 import * as Clipboard from "expo-clipboard";
 import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
+import { RandomRangeInt } from "../../utility/math/math";
 
 export const HomeScreen = ({ navigation }) => {
   const FADE_IN_DURATION = 1000;
@@ -153,7 +154,7 @@ export const HomeScreen = ({ navigation }) => {
                       Lv
                     </Text>
                     <Text style={[worldxstyles.text, worldxstyles.textMedium]}>
-                      10
+                      {RandomRangeInt(1, 50)}
                     </Text>
                   </View>
                 </View>
@@ -205,7 +206,7 @@ export const HomeScreen = ({ navigation }) => {
                       worldxstyles.textBold,
                     ]}
                   >
-                    200
+                    {RandomRangeInt(100, 1000)}
                   </Text>
                   <Text style={worldxstyles.text}>Loyalty Points</Text>
                 </View>

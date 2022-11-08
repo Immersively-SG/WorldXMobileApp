@@ -15,10 +15,10 @@ import * as Font from "expo-font";
 //SCREENS
 import { SplashScreen } from "./components/screens/splashscreen/splashscreen.js";
 import { MarketplaceScreen } from "./components/screens/marketplace/marketplacescreen.js";
-import { DetailsScreen } from "./components/screens/details/detailscreen.js";
-import { HomeScreen } from "./components/screens/homescreen/homescreen.js";
+import { HomeScreen } from "./components/screens/home/homescreen.js";
 import { BottomNavigator } from "./components/navigator/bottomnavigator.js";
 import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bethereandearnscreen.js";
+import { PayScreen } from "./components/screens/pay/payscreen.js";
 
 Splashscreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
@@ -84,14 +84,12 @@ export default function App() {
           >
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
             <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Details" component={DetailsScreen} />
-
             <Stack.Screen name="MarketPlace" component={MarketplaceScreen} />
             <Stack.Screen
               name="BeThereAndEarn"
               component={BeThereAndEarnScreen}
             />
-            <Stack.Screen name="MarketTrend" component={HomeScreen} />
+            <Stack.Screen name="Pay" component={PayScreen} />
             <Stack.Screen name="Settings" component={HomeScreen} />
           </Stack.Navigator>
           <BottomNavigator
