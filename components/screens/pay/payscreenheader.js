@@ -3,15 +3,15 @@ import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 
-export const PayScreenHeader = () => {
+export const PayScreenHeader = (props) => {
   return (
     <View
       style={[
+        props.style,
         {
           justifyContent: "center",
           alignContent: "flex-end",
         },
-        worldxstyles.bordered,
       ]}
     >
       <LinearGradient

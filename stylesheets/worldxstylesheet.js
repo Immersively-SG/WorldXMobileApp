@@ -7,10 +7,11 @@ export const worldxstyles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    borderStyle: "solid",
+
     margin: 20,
   },
   bordered: {
+    borderStyle: "solid",
     borderRadius: 20,
     borderWidth: 3,
     borderColor: worldxstyleconstants.lineColor,
@@ -25,7 +26,7 @@ export const worldxstyles = StyleSheet.create({
     color: "#ffffff",
   },
   textMedium: {
-    fontSize: 20,
+    fontSize: 30,
   },
   textBig: {
     fontSize: 50,

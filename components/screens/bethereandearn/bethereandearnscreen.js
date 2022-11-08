@@ -124,7 +124,7 @@ export const BeThereAndEarnScreen = () => {
     <Animatable.View
       useNativeDriver={true}
       animation="fadeInUp"
-      duration={2000}
+      duration={1000}
       style={{ flex: 1, justifyContent: "center" }}
     >
       <View style={[styles.container, { flex: 1, alignSelf: "stretch" }]}>
