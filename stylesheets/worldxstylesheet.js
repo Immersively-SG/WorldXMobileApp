@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 export const worldxstyleconstants = {
   lineColor: "#8f4dcf",
+  backgroundColor: "#1c0738",
 };
 
 export const worldxstyles = StyleSheet.create({
