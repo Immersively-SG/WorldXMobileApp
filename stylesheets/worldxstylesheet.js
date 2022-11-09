@@ -1,14 +1,13 @@
-import { StyleSheet } from "react-native";
+import EStyleSheet from "react-native-extended-stylesheet";
 export const worldxstyleconstants = {
   lineColor: "#8f4dcf",
   backgroundColor: "#1c0738",
 };
 
-export const worldxstyles = StyleSheet.create({
+export const worldxstyles = EStyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-
     margin: 20,
   },
   bordered: {
@@ -26,11 +25,14 @@ export const worldxstyles = StyleSheet.create({
   text: {
     color: "#ffffff",
   },
+  textSmallMedium: {
+    fontSize: "1.5rem",
+  },
   textMedium: {
-    fontSize: 30,
+    fontSize: "2rem",
   },
   textBig: {
-    fontSize: 50,
+    fontSize: "3rem",
   },
   textBold: {
     fontWeight: "bold",

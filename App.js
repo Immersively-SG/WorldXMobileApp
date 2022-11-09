@@ -19,6 +19,11 @@ import { HomeScreen } from "./components/screens/home/homescreen.js";
 import { BottomNavigator } from "./components/navigator/bottomnavigator.js";
 import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bethereandearnscreen.js";
 import { PayScreen } from "./components/screens/pay/payscreen.js";
+import EStyleSheet from "react-native-extended-stylesheet";
+import { LogBox } from "react-native";
+
+EStyleSheet.build(); //For global variables, but STILL MUST CALL OR ELSE THE STYLESHEETS WONT WORK
+LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
 
 Splashscreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();

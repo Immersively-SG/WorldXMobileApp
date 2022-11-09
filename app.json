@@ -7,9 +7,9 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/WorldX/Logo/worldxlogo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -26,10 +26,20 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.worldx.worldxmobileapp",
-      "versionCode": 1
+      "versionCode": 1,
+      "config": {
+        "googleMaps":{
+          "apiKey":"AIzaSyDeJC1kcVNzlWG43C70m6IHV_SFiwWMo6I"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e15ca045-8081-4c73-94bf-36a546838d2a"
+      }
     }
   }
 }

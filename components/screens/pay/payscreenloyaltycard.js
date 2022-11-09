@@ -74,17 +74,12 @@ export const PayScreenLoyaltyCard = (props) => {
     >
       {/* ------------  */}
       <View style={[{ alignSelf: "flex-start", marginHorizontal: 10 }]}>
-        <View
-          style={[
-            worldxstyles.flexRow,
-            { justifyContent: "space-between", alignItems: "flex-end" },
-          ]}
-        >
+        <View style={[worldxstyles.flexRow, { alignItems: "flex-end" }]}>
           <Text
             style={[
               worldxstyles.text,
               worldxstyles.textBold,
-              { fontSize: 20, marginVertical: 10 },
+              { marginVertical: 10 },
             ]}
           >
             Cashback Value:
@@ -92,8 +87,9 @@ export const PayScreenLoyaltyCard = (props) => {
           <Text
             style={[
               worldxstyles.text,
+              worldxstyles.textMedium,
               worldxstyles.textBold,
-              { fontSize: 40, color: "#ac8814" },
+              { color: "#ac8814" },
             ]}
           >
             {cashbackVal}%
@@ -119,7 +115,7 @@ export const PayScreenLoyaltyCard = (props) => {
           style={[
             worldxstyles.text,
             worldxstyles.textBold,
-            worldxstyles.textMedium,
+            worldxstyles.textSmallMedium,
             { color: "#ac8814" },
           ]}
         >
@@ -135,11 +131,12 @@ export const PayScreenLoyaltyCard = (props) => {
         style={[
           worldxstyles.text,
           worldxstyles.textBold,
-          { alignSelf: "flex-start" },
+          { alignSelf: "flex-start", marginBottom: 10 },
         ]}
       >
         Active Loyalty Card
       </Text>
+      {/******************* */}
       <FlipCard
         flipDirection={"h"}
         ref={card}

@@ -258,9 +258,10 @@ export const BeThereAndEarnScreen = () => {
                 <Text
                   style={[
                     worldxstyles.text,
+                    worldxstyles.textSmallMedium,
                     {
                       textAlign: "center",
-                      fontSize: 20,
+
                       textShadowRadius: 20,
                       textShadowColor: "white",
                     },
@@ -298,7 +299,9 @@ export const BeThereAndEarnScreen = () => {
                     },
                   ]}
                 >
-                  <Text style={[worldxstyles.text, worldxstyles.textMedium]}>
+                  <Text
+                    style={[worldxstyles.text, worldxstyles.textSmallMedium]}
+                  >
                     {nearestExpCircle.distance}m
                   </Text>
                   <View
@@ -314,7 +317,7 @@ export const BeThereAndEarnScreen = () => {
                     <Text
                       style={[
                         worldxstyles.text,
-                        worldxstyles.textMedium,
+                        worldxstyles.textSmallMedium,
                         { textAlign: "center", textAlignVertical: "center" },
                       ]}
                     >

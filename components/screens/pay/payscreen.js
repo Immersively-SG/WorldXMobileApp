@@ -7,6 +7,7 @@ import { PayScreenLoyaltyCard } from "./payscreenloyaltycard";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
 import { Prompt_600SemiBold } from "@expo-google-fonts/dev";
+import { PayScreenQRScan } from "./payscreenqrscan";
 
 export const PayScreen = () => {
   const [isLoyalty, setIsLoyalty] = useState(false);
@@ -43,9 +44,15 @@ export const PayScreen = () => {
           borderRadius: Dimensions.get("window").width / 2,
           padding: 20,
         }}
+        onPress={() => {
+          console.log("sdfds");
+        }}
       >
         <MaterialCommunityIcons name="qrcode-scan" size={30} color="white" />
       </TouchableShadowButton>
+      <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+        Scan and pay
+      </Text>
     </View>
   );
 };
