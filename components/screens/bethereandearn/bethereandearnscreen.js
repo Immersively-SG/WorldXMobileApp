@@ -1,14 +1,21 @@
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import {
   worldxstyleconstants,
   worldxstyles,
 } from "../../../stylesheets/worldxstylesheet";
 import { Emitter } from "react-native-particles";
 import { useState, useEffect, createRef } from "react";
-import MapView, { Circle } from "react-native-maps";
+import MapView, { Circle, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
-import { isPointWithinRadius } from "geolib";
+import {
+  isPointWithinRadius,
+  findNearest,
+  getCompassDirection,
+  getDistance,
+} from "geolib";
 import * as Animatable from "react-native-animatable";
+
+import { Particle } from "../../utility/particle/particle";
 
 export const BeThereAndEarnScreen = () => {
   const [location, setLocation] = useState(null);
@@ -17,6 +24,7 @@ export const BeThereAndEarnScreen = () => {
   const [expCirclesArray, setExpCirclesArray] = useState(null);
   const [expCirclesDataArray, setExpCirclesDataArray] = useState(null);
   const [isInExpCircle, setIsInExpCircle] = useState(false);
+  const [nearestExpCircle, setNearestExpCircle] = useState(null);
 
   const mapRef = createRef();
   const goToMyLocation = async (_latitude, _longitude) => {
@@ -29,6 +37,17 @@ export const BeThereAndEarnScreen = () => {
     });
   };
 
+  const updateLocation = async () => {
+    //fetch location updates
+
+    let location = await Location.getCurrentPositionAsync({
+      timeInterval: 5000,
+    });
+
+    let geocode = await Location.reverseGeocodeAsync(location.coords);
+    setLocation(location);
+    setGeocode(geocode);
+  };
   //ON MOUNT
   useEffect(() => {
     var interval;
@@ -80,22 +99,16 @@ export const BeThereAndEarnScreen = () => {
           );
         });
       });
-
-      //fetch location updates every interval
-      interval = setInterval(async () => {
-        let location = await Location.getCurrentPositionAsync({
-          timeInterval: 5000,
-        });
-
-        let geocode = await Location.reverseGeocodeAsync(location.coords);
-        setLocation(location);
-        setGeocode(geocode);
+      interval = setInterval(() => {
+        updateLocation();
       }, 1000);
     })();
-    return () => clearInterval(interval); //impt! cleanup on unmount
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
-  //eveytime the location change
+  //eveytime the location changes
   useEffect(() => {
     if (location == null) return;
 
@@ -118,6 +131,27 @@ export const BeThereAndEarnScreen = () => {
       );
     });
     setIsInExpCircle(isUserInAnyCircle);
+
+    if (expCirclesDataArray == null) return;
+    //calculate details to nearest exp circle
+    const nearestCirclePoint = findNearest(
+      location.coords,
+      expCirclesDataArray.map((element) => {
+        return { latitude: element.latitude, longitude: element.longitude };
+      })
+    );
+    const directionToCircle = getCompassDirection(
+      location.coords,
+      nearestCirclePoint
+    );
+
+    const distanceToCircle = getDistance(location.coords, nearestCirclePoint);
+
+    setNearestExpCircle({
+      point: nearestCirclePoint,
+      direction: directionToCircle,
+      distance: distanceToCircle,
+    });
   }, [location]);
 
   return (
@@ -158,6 +192,13 @@ export const BeThereAndEarnScreen = () => {
             loadingEnabled={true}
           >
             {expCirclesArray}
+            {location && nearestExpCircle && (
+              <Polyline
+                coordinates={[location.coords, nearestExpCircle.point]}
+                strokeColor={worldxstyleconstants.lineColor}
+                strokeWidth={6}
+              />
+            )}
           </MapView>
         </View>
         <View
@@ -187,31 +228,105 @@ export const BeThereAndEarnScreen = () => {
             <View
               style={{
                 flex: 1,
+                width: "100%",
                 justifyContent: "space-around",
+                alignItems: "center",
                 flexDirection: "row",
               }}
             >
-              <Text style={worldxstyles.text}>You are in a reward circle!</Text>
+              <View>
+                <Emitter
+                  numberOfParticles={1}
+                  emissionRate={1}
+                  interval={0}
+                  particleLife={2000}
+                  direction={-90}
+                  spread={20}
+                  speed={15}
+                  autoStart={true}
+                  infiniteLoop={true}
+                  gravity={1}
+                >
+                  <Particle />
+                </Emitter>
+              </View>
+              <View style={[{ flex: 1 }]}>
+                <Text style={[worldxstyles.text, { textAlign: "center" }]}>
+                  You are in a reward circle!
+                </Text>
 
-              {/* <Emitter
-                numberOfParticles={50}
-                emissionRate={1}
-                interval={0}
-                particleLife={1500}
-                direction={-90}
-                spread={45}
-                speed={10}
-                autoStart={true}
-                infiniteLoop={true}
-                fromPosition={{ x: 0, y: 0 }}
-              >
-                <Text style={worldxstyles.text}>Particle</Text>
-              </Emitter> */}
+                <Text
+                  style={[
+                    worldxstyles.text,
+                    {
+                      textAlign: "center",
+                      fontSize: 20,
+                      textShadowRadius: 20,
+                      textShadowColor: "white",
+                    },
+                  ]}
+                >
+                  (Start collecting points!)
+                </Text>
+              </View>
+              <View>
+                <Emitter
+                  numberOfParticles={1}
+                  emissionRate={1}
+                  interval={0}
+                  particleLife={2000}
+                  direction={-90}
+                  spread={20}
+                  speed={15}
+                  autoStart={true}
+                  infiniteLoop={true}
+                  gravity={1}
+                >
+                  <Particle />
+                </Emitter>
+              </View>
             </View>
           ) : (
-            <Text style={worldxstyles.text}>
-              You are not in a reward circle!
-            </Text>
+            nearestExpCircle && (
+              <View>
+                <View
+                  style={[
+                    worldxstyles.flexRow,
+                    {
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                    },
+                  ]}
+                >
+                  <Text style={[worldxstyles.text, worldxstyles.textMedium]}>
+                    {nearestExpCircle.distance}m
+                  </Text>
+                  <View
+                    style={[
+                      worldxstyles.bordered,
+                      {
+                        borderRadius: 10,
+                        alignSelf: "flex-end",
+                        padding: 10,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        worldxstyles.text,
+                        worldxstyles.textMedium,
+                        { textAlign: "center", textAlignVertical: "center" },
+                      ]}
+                    >
+                      {nearestExpCircle.direction}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={[worldxstyles.text]}>
+                  Approach a reward circle to earn points!
+                </Text>
+              </View>
+            )
           )}
         </View>
       </View>

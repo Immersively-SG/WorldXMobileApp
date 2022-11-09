@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c7f6bf0d-f2f0-4ab3-8597-7a0dd29fc1de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/screens/bethereandearn/bethereandearnscreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../components/screens/bethereandearn/bethereandearnscreen.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
