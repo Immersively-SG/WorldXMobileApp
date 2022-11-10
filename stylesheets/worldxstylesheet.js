@@ -26,7 +26,7 @@ export const worldxstyles = EStyleSheet.create({
     color: "#ffffff",
   },
   textSmallMedium: {
-    fontSize: "1.5rem",
+    fontSize: "1.2rem",
   },
   textMedium: {
     fontSize: "2rem",

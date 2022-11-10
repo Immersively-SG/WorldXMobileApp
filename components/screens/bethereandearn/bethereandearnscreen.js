@@ -261,7 +261,6 @@ export const BeThereAndEarnScreen = () => {
                     worldxstyles.textSmallMedium,
                     {
                       textAlign: "center",
-
                       textShadowRadius: 20,
                       textShadowColor: "white",
                     },
@@ -296,6 +295,7 @@ export const BeThereAndEarnScreen = () => {
                     {
                       justifyContent: "space-between",
                       alignItems: "flex-start",
+                      padding: 10,
                     },
                   ]}
                 >
@@ -310,7 +310,7 @@ export const BeThereAndEarnScreen = () => {
                       {
                         borderRadius: 10,
                         alignSelf: "flex-end",
-                        padding: 10,
+                        padding: 5,
                       },
                     ]}
                   >
@@ -325,7 +325,7 @@ export const BeThereAndEarnScreen = () => {
                     </Text>
                   </View>
                 </View>
-                <Text style={[worldxstyles.text]}>
+                <Text style={[worldxstyles.text, { textAlign: "center" }]}>
                   Approach a reward circle to earn points!
                 </Text>
               </View>

@@ -7,11 +7,11 @@ export const PayScreenHeader = (props) => {
   return (
     <View
       style={[
-        props.style,
         {
           justifyContent: "center",
           alignContent: "flex-end",
         },
+        props.style,
       ]}
     >
       <LinearGradient

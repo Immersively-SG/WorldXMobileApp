@@ -46,7 +46,11 @@ export const HomeScreen = ({ navigation }) => {
             duration={FADE_IN_DURATION}
             delay={(index + 1) * 300 + FADE_IN_DURATION}
             style={[
-              { flex: 1, justifyContent: "center", aspectRatio: 1 },
+              {
+                flex: 1,
+                justifyContent: "center",
+                aspectRatio: 1,
+              },
               worldxstyles.container,
               worldxstyles.bordered,
             ]}

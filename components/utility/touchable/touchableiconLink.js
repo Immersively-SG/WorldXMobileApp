@@ -3,7 +3,7 @@ import { TouchableOpacity, Image, StyleSheet, Text } from "react-native";
 export const TouchableIconLink = (props) => {
   return (
     <TouchableOpacity
-      style={styles.icon}
+      style={[styles.icon, { alignItems: "center" }]}
       activeOpacity={0.5}
       onPress={() => {
         props.navigation.push(props.screenName);

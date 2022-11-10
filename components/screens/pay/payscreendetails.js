@@ -53,7 +53,7 @@ export const PayScreenDetails = (props) => {
               worldxstyles.text,
               worldxstyles.textBold,
               worldxstyles.textMedium,
-              { color: "grey" },
+              { color: "grey", textAlign: "center" },
             ]}
           >
             No cashback records
@@ -72,8 +72,7 @@ const GenerateCashbackHistory = () => {
       <Animatable.View
         useNativeDriver={true}
         animation="fadeInUp"
-        duration={500}
-        delay={(i + 1) * 100}
+        duration={1000}
       >
         <LinearGradient
           key={i}

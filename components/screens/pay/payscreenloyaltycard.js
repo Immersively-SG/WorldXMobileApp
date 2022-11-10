@@ -24,7 +24,7 @@ export const PayScreenLoyaltyCard = (props) => {
           overflow: "hidden",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingVertical: 10,
+          padding: 10,
         },
       ]}
     >
@@ -68,7 +68,7 @@ export const PayScreenLoyaltyCard = (props) => {
           overflow: "hidden",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingVertical: 10,
+          padding: 10,
         },
       ]}
     >
