@@ -8,12 +8,12 @@ export const worldxstyles = EStyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    margin: 20,
+    margin: "1rem",
   },
   bordered: {
     borderStyle: "solid",
-    borderRadius: 20,
-    borderWidth: 3,
+    borderRadius: "1rem",
+    borderWidth: "0.2rem",
     borderColor: worldxstyleconstants.lineColor,
   },
   flexRow: {

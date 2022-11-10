@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
 import { PayScreenQRScan } from "./payscreenqrscan";
 import { PayScreenPayment } from "./payscreenpayment";
-
+import { RandomString, RandomRangeInt } from "../../utility/math/math";
 export const PayScreen = () => {
   const [isLoyalty, setIsLoyalty] = useState(false);
   const [isPayment, setIsPayment] = useState(false);
@@ -80,8 +80,10 @@ export const PayScreen = () => {
           />
         </>
       ) : (
-        <View style={[worldxstyles.container, { flex: 1 }]}>
-          <PayScreenPayment />
+        <View style={[worldxstyles.container, { flex: 4, width: "100%" }]}>
+          <PayScreenPayment
+            style={[worldxstyles.container, { flex: 1, width: "100%" }]}
+          />
         </View>
       )}
     </View>
