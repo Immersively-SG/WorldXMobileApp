@@ -5,45 +5,47 @@ import { useEffect, useRef, useState } from "react";
 
 import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
 import { RandomRangeFloat, RandomRangeInt } from "../../utility/math/math";
+import { useSelector, useDispatch } from "react-redux";
+import { saveLoyaltyCardSlice } from "../../../features/paymentscreenslice";
+
+const CASHBACK_VALUES = [10, 15, 20, 25, 50];
 
 export const PayScreenLoyaltyCard = (props) => {
   const card = useRef();
-  const [cashbackVal, setCashbackVal] = useState(0);
+  const payLoyaltyState = useSelector(
+    (state) => state.paymentScreen.loyaltyCardSlice
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setCashbackVal(RandomRangeInt(10, 90));
+    //Generate a random cashback percentage if there is no loyalty purchased
+    if (payLoyaltyState.isLoyalty == false) {
+      const state = {
+        cardCashbackPercent:
+          CASHBACK_VALUES[RandomRangeInt(0, CASHBACK_VALUES.length - 1)],
+        accumulatedCashback: 0.0,
+        isLoyalty: true,
+        cashbackHistoryArray: [],
+      };
+
+      dispatch(saveLoyaltyCardSlice(state));
+    }
   }, []);
 
-  const Front = (
-    <View
-      style={[
-        worldxstyles.bordered,
-        {
-          flex: 1,
-          backgroundColor: "#1c0738",
-          overflow: "hidden",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 10,
-        },
-      ]}
-    >
-      <Text
+  const Front = () => {
+    return (
+      <View
         style={[
-          worldxstyles.text,
-          worldxstyles.textBold,
-          { textAlign: "center" },
+          worldxstyles.bordered,
+          {
+            flex: 1,
+            backgroundColor: "#1c0738",
+            overflow: "hidden",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 10,
+          },
         ]}
-      >
-        Oops! You have no loyalty card yet. Buy 1 to start earning cashback!
-      </Text>
-
-      <TouchableShadowButton
-        onPress={() => {
-          card.current.flipHorizontal();
-          props.onPurchaseLoyalty(true);
-        }}
-        style={{ paddingVertical: 5, paddingHorizontal: 10 }}
       >
         <Text
           style={[
@@ -52,78 +54,103 @@ export const PayScreenLoyaltyCard = (props) => {
             { textAlign: "center" },
           ]}
         >
-          PURCHASE
+          Oops! You have no loyalty card yet. Buy 1 to start earning cashback!
         </Text>
-      </TouchableShadowButton>
-    </View>
-  );
 
-  const Back = (
-    <View
-      style={[
-        worldxstyles.bordered,
-        {
-          flex: 1,
-          backgroundColor: "#1c0738",
-          overflow: "hidden",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 10,
-        },
-      ]}
-    >
-      {/* ------------  */}
-      <View style={[{ alignSelf: "flex-start", marginHorizontal: 10 }]}>
-        <View style={[worldxstyles.flexRow, { alignItems: "flex-end" }]}>
+        <TouchableShadowButton
+          onPress={() => {
+            card.current.flipHorizontal();
+            props.onPurchaseLoyalty(true);
+          }}
+          style={{ paddingVertical: 5, paddingHorizontal: 10 }}
+        >
           <Text
             style={[
               worldxstyles.text,
               worldxstyles.textBold,
-              { marginVertical: 10 },
+              { textAlign: "center" },
             ]}
           >
-            Cashback Value:
+            PURCHASE
+          </Text>
+        </TouchableShadowButton>
+      </View>
+    );
+  };
+
+  const Back = () => {
+    return (
+      <View
+        style={[
+          worldxstyles.bordered,
+          {
+            flex: 1,
+            backgroundColor: "#1c0738",
+            overflow: "hidden",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 10,
+          },
+        ]}
+      >
+        {/* ------------  */}
+        <View style={[{ alignSelf: "flex-start", marginHorizontal: 10 }]}>
+          <View style={[worldxstyles.flexRow, { alignItems: "flex-end" }]}>
+            <Text
+              style={[
+                worldxstyles.text,
+                worldxstyles.textBold,
+                { marginVertical: 10 },
+              ]}
+            >
+              Cashback Value:
+            </Text>
+            <Text
+              style={[
+                worldxstyles.text,
+                worldxstyles.textMedium,
+                worldxstyles.textBold,
+                { color: "#ac8814" },
+              ]}
+            >
+              {payLoyaltyState.cardCashbackPercent}%
+            </Text>
+          </View>
+          <View>
+            <Text style={[worldxstyles.text]}>
+              Earn {payLoyaltyState.cardCashbackPercent}% cashback on all
+              purchases!
+            </Text>
+          </View>
+        </View>
+        {/* ------------  */}
+        <View
+          style={[
+            worldxstyles.flexRow,
+            {
+              alignItems: "center",
+              alignSelf: "flex-end",
+              marginHorizontal: 10,
+            },
+          ]}
+        >
+          <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+            Cashback Limit:
           </Text>
           <Text
             style={[
               worldxstyles.text,
-              worldxstyles.textMedium,
               worldxstyles.textBold,
+              worldxstyles.textSmallMedium,
               { color: "#ac8814" },
             ]}
           >
-            {cashbackVal}%
-          </Text>
-        </View>
-        <View>
-          <Text style={[worldxstyles.text]}>
-            Earn {cashbackVal}% cashback on all purchases!
+            ${payLoyaltyState.accumulatedCashback}/$100
           </Text>
         </View>
       </View>
-      {/* ------------  */}
-      <View
-        style={[
-          worldxstyles.flexRow,
-          { alignItems: "center", alignSelf: "flex-end", marginHorizontal: 10 },
-        ]}
-      >
-        <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-          Cashback Limit:
-        </Text>
-        <Text
-          style={[
-            worldxstyles.text,
-            worldxstyles.textBold,
-            worldxstyles.textSmallMedium,
-            { color: "#ac8814" },
-          ]}
-        >
-          ${RandomRangeFloat(1, 100).toFixed(2)}/$100
-        </Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={props.style}>
@@ -146,8 +173,8 @@ export const PayScreenLoyaltyCard = (props) => {
         flipZoom={0.001}
         duration={300}
       >
-        {Front}
-        {Back}
+        {payLoyaltyState.isLoyalty ? <Back /> : <Front />}
+        {payLoyaltyState.isLoyalty ? <Front /> : <Back />}
       </FlipCard>
     </View>
   );

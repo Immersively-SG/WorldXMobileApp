@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, Dimensions } from "react-native";
 import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
 import { PayScreenDetails } from "./payscreendetails";
@@ -9,11 +9,16 @@ import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbu
 import { PayScreenQRScan } from "./payscreenqrscan";
 import { PayScreenPayment } from "./payscreenpayment";
 import { RandomString, RandomRangeInt } from "../../utility/math/math";
+import { useSelector } from "react-redux";
+
 export const PayScreen = () => {
-  const [isLoyalty, setIsLoyalty] = useState(false);
-  const [isPayment, setIsPayment] = useState(false);
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
+
+  const isLoyalty = useSelector((state) => {
+    state.paymentScreen.loyaltyCardSlice.isLoyalty;
+  });
+
   const ScanButton = () => {
     return (
       <View style={{ alignItems: "center" }}>
@@ -24,7 +29,8 @@ export const PayScreen = () => {
             padding: 20,
           }}
           onPress={() => {
-            return setQrModalVisible(true);
+            //return setQrModalVisible(true);
+            setPaymentData({});
           }}
         >
           <MaterialCommunityIcons name="qrcode-scan" size={30} color="white" />
@@ -53,7 +59,7 @@ export const PayScreen = () => {
           },
         ]}
       />
-      {isPayment ? (
+      {!paymentData ? (
         <>
           <PayScreenLoyaltyCard
             style={[{ flex: 2, width: "100%", marginTop: 20 }]}
@@ -83,6 +89,7 @@ export const PayScreen = () => {
         <View style={[worldxstyles.container, { flex: 4, width: "100%" }]}>
           <PayScreenPayment
             style={[worldxstyles.container, { flex: 1, width: "100%" }]}
+            setPaymentData={setPaymentData}
           />
         </View>
       )}

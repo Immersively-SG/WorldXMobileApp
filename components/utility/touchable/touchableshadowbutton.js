@@ -8,6 +8,7 @@ export const TouchableShadowButton = (props) => {
       startColor={"#000000"}
       endColor={"rgba(0,0,0,0)"}
       offset={[0, 5]}
+      containerStyle={props.containerStyle}
     >
       <TouchableOpacity
         style={[

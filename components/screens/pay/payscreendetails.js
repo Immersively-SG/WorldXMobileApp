@@ -11,14 +11,14 @@ import {
   RandomString,
 } from "../../utility/math/math";
 import * as Animatable from "react-native-animatable";
+
+import { useSelector, useDispatch } from "react-redux";
 import { Shadow } from "react-native-shadow-2";
 
 export const PayScreenDetails = (props) => {
-  const [cashbackHistory, setCashbackHistory] = useState(null);
-
-  useEffect(() => {
-    setCashbackHistory(() => GenerateCashbackHistory());
-  }, []);
+  const cashbackHistory = useSelector(
+    (state) => state.paymentScreen.loyaltyCardSlice.cashbackHistory
+  );
 
   return (
     <View style={props.style}>
@@ -35,8 +35,37 @@ export const PayScreenDetails = (props) => {
         <FlatList
           style={{ width: "100%" }}
           data={cashbackHistory}
-          renderItem={({ item }) => {
-            return item;
+          renderItem={({ item, index }) => {
+            return (
+              <Animatable.View
+                useNativeDriver={true}
+                animation="fadeInUp"
+                duration={1000}
+              >
+                <LinearGradient
+                  key={i}
+                  style={[
+                    worldxstyles.flexRow,
+                    {
+                      width: "100%",
+                      justifyContent: "space-between",
+                      padding: 20,
+                      marginBottom: 10,
+                      borderRadius: 10,
+                    },
+                  ]}
+                  colors={[worldxstyleconstants.backgroundColor, "#000000"]}
+                  end={{ x: 1.0, y: 1.0 }}
+                >
+                  <Text style={worldxstyles.text}>
+                    {item.merchantName} product
+                  </Text>
+                  <Text style={[worldxstyles.text, { color: "green" }]}>
+                    + ${item.cashback}
+                  </Text>
+                </LinearGradient>
+              </Animatable.View>
+            );
           }}
         />
       ) : (
@@ -62,43 +91,4 @@ export const PayScreenDetails = (props) => {
       )}
     </View>
   );
-};
-
-const GenerateCashbackHistory = () => {
-  const num = RandomRangeInt(1, 100);
-  var historyArray = [];
-  for (var i = 0; i < num; ++i) {
-    historyArray.push(
-      <Animatable.View
-        useNativeDriver={true}
-        animation="fadeInUp"
-        duration={1000}
-      >
-        <LinearGradient
-          key={i}
-          style={[
-            worldxstyles.flexRow,
-            {
-              width: "100%",
-              justifyContent: "space-between",
-              padding: 20,
-              marginBottom: 10,
-              borderRadius: 10,
-            },
-          ]}
-          colors={[worldxstyleconstants.backgroundColor, "#000000"]}
-          end={{ x: 1.0, y: 1.0 }}
-        >
-          <Text style={worldxstyles.text}>
-            {RandomString(RandomRangeInt(3, 5))} product
-          </Text>
-          <Text style={[worldxstyles.text, { color: "green" }]}>
-            + ${RandomRangeFloat(0.1, 10.0).toFixed(2)}
-          </Text>
-        </LinearGradient>
-      </Animatable.View>
-    );
-  }
-
-  return historyArray;
 };

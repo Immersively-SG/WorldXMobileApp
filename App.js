@@ -11,6 +11,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Splashscreen from "expo-splash-screen";
 import * as Font from "expo-font";
+import EStyleSheet from "react-native-extended-stylesheet";
+import { LogBox } from "react-native";
+
+//REDUX
+import { store } from "./store";
+import { Provider } from "react-redux";
 
 //SCREENS
 import { SplashScreen } from "./components/screens/splashscreen/splashscreen.js";
@@ -19,8 +25,6 @@ import { HomeScreen } from "./components/screens/home/homescreen.js";
 import { BottomNavigator } from "./components/navigator/bottomnavigator.js";
 import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bethereandearnscreen.js";
 import { PayScreen } from "./components/screens/pay/payscreen.js";
-import EStyleSheet from "react-native-extended-stylesheet";
-import { LogBox } from "react-native";
 
 EStyleSheet.build(); //For global variables, but STILL MUST CALL OR ELSE THE STYLESHEETS WONT WORK
 LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
@@ -69,41 +73,43 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <NavigationContainer
-        ref={navigationRef}
-        theme={MyTheme}
-        onStateChange={async () => {
-          setCurrentRouteName(navigationRef.getCurrentRoute().name);
-        }}
-      >
-        <ImageBackground
-          source={backgroundImage}
-          style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+    <Provider store={store}>
+      <SafeAreaView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <NavigationContainer
+          ref={navigationRef}
+          theme={MyTheme}
+          onStateChange={async () => {
+            setCurrentRouteName(navigationRef.getCurrentRoute().name);
+          }}
         >
-          <Stack.Navigator
-            initialRouteName="SpashScreen"
-            screenOptions={{
-              headerShown: false,
-            }}
+          <ImageBackground
+            source={backgroundImage}
+            style={{ width: "100%", height: "100%", resizeMode: "cover" }}
           >
-            <Stack.Screen name="SplashScreen" component={SplashScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="MarketPlace" component={MarketplaceScreen} />
-            <Stack.Screen
-              name="BeThereAndEarn"
-              component={BeThereAndEarnScreen}
+            <Stack.Navigator
+              initialRouteName="SpashScreen"
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="SplashScreen" component={SplashScreen} />
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="MarketPlace" component={MarketplaceScreen} />
+              <Stack.Screen
+                name="BeThereAndEarn"
+                component={BeThereAndEarnScreen}
+              />
+              <Stack.Screen name="Pay" component={PayScreen} />
+              <Stack.Screen name="Settings" component={HomeScreen} />
+            </Stack.Navigator>
+            <BottomNavigator
+              currentScreen={currentRouteName}
+              navStateReady={navigationRef?.isReady()}
             />
-            <Stack.Screen name="Pay" component={PayScreen} />
-            <Stack.Screen name="Settings" component={HomeScreen} />
-          </Stack.Navigator>
-          <BottomNavigator
-            currentScreen={currentRouteName}
-            navStateReady={navigationRef?.isReady()}
-          />
-        </ImageBackground>
-      </NavigationContainer>
-    </SafeAreaView>
+          </ImageBackground>
+        </NavigationContainer>
+      </SafeAreaView>
+    </Provider>
   );
 }
 
