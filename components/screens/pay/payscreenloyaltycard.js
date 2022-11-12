@@ -18,16 +18,14 @@ export const PayScreenLoyaltyCard = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    //Generate a random cashback percentage if there is no loyalty purchased
     if (payLoyaltyState.isLoyalty == false) {
       const state = {
         cardCashbackPercent:
           CASHBACK_VALUES[RandomRangeInt(0, CASHBACK_VALUES.length - 1)],
-        accumulatedCashback: 0.0,
+        accumulatedCashback: payLoyaltyState.accumulatedCashback,
         isLoyalty: true,
-        cashbackHistoryArray: [],
+        cashbackHistoryArray: payLoyaltyState.cashbackHistoryArray,
       };
-
       dispatch(saveLoyaltyCardSlice(state));
     }
   }, []);
@@ -60,7 +58,20 @@ export const PayScreenLoyaltyCard = (props) => {
         <TouchableShadowButton
           onPress={() => {
             card.current.flipHorizontal();
-            props.onPurchaseLoyalty(true);
+            //Generate a random cashback percentage if there is no loyalty purchased
+            if (payLoyaltyState.isLoyalty == false) {
+              const state = {
+                cardCashbackPercent:
+                  CASHBACK_VALUES[
+                    RandomRangeInt(0, CASHBACK_VALUES.length - 1)
+                  ],
+                accumulatedCashback: 0.0,
+                isLoyalty: true,
+                cashbackHistoryArray: [],
+              };
+
+              dispatch(saveLoyaltyCardSlice(state));
+            }
           }}
           style={{ paddingVertical: 5, paddingHorizontal: 10 }}
         >
@@ -145,7 +156,7 @@ export const PayScreenLoyaltyCard = (props) => {
               { color: "#ac8814" },
             ]}
           >
-            ${payLoyaltyState.accumulatedCashback}/$100
+            ${payLoyaltyState.accumulatedCashback.toFixed(2)}/$100
           </Text>
         </View>
       </View>
@@ -173,8 +184,8 @@ export const PayScreenLoyaltyCard = (props) => {
         flipZoom={0.001}
         duration={300}
       >
-        {payLoyaltyState.isLoyalty ? <Back /> : <Front />}
-        {payLoyaltyState.isLoyalty ? <Front /> : <Back />}
+        <Back />
+        <Front />
       </FlipCard>
     </View>
   );

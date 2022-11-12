@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Text, View, Dimensions } from "react-native";
 import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
+
 import { PayScreenDetails } from "./payscreendetails";
 import { PayScreenHeader } from "./payscreenheader";
 import { PayScreenLoyaltyCard } from "./payscreenloyaltycard";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
 import { PayScreenQRScan } from "./payscreenqrscan";
 import { PayScreenPayment } from "./payscreenpayment";
-import { RandomString, RandomRangeInt } from "../../utility/math/math";
+
 import { useSelector } from "react-redux";
 
 export const PayScreen = () => {
@@ -63,7 +64,6 @@ export const PayScreen = () => {
         <>
           <PayScreenLoyaltyCard
             style={[{ flex: 2, width: "100%", marginTop: 20 }]}
-            onPurchaseLoyalty={setIsLoyalty}
           />
           <PayScreenDetails
             style={[

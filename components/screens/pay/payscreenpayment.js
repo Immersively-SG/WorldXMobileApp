@@ -22,6 +22,7 @@ import {
 } from "../../../features/paymentscreenslice";
 
 export const PayScreenPayment = (props) => {
+  const [isPaid, setIsPaid] = useState(false);
   const [isCashbackClicked, setIsCashbackClicked] = useState(false);
   const cashbackPercent = useSelector(
     (state) => state.paymentScreen.loyaltyCardSlice.cardCashbackPercent
@@ -32,27 +33,40 @@ export const PayScreenPayment = (props) => {
   const dispatch = useDispatch();
 
   const [paymentInfo, setPaymentInfo] = useState(null); //implicitly used to conditional render this component
-  const [merchantName] = useState(RandomString(RandomRangeInt(3, 6)));
+
   const [paymentCost] = useState(RandomRangeFloat(1.0, 50.0).toFixed(2));
-  const [cashbackLeft, setCashbackLeft] = useState(null);
+  const [merchantName] = useState(RandomString(RandomRangeInt(3, 6)));
 
   useEffect(() => {
     var totalCost;
-
+    var cashbackEarned;
+    var cashbackLeft;
     if (isCashbackClicked) {
-      totalCost = (paymentCost - accumulatedCashback).toFixed(2);
-      //if cashback is more than cost, then set overflow to accumulated cashback
-      setCashbackLeft(totalCost < 0.0 ? Math.abs(totalCost) : 0.0);
+      if (paymentCost < accumulatedCashback) {
+        cashbackLeft = parseFloat(accumulatedCashback - paymentCost).toFixed(2);
+        totalCost = 0.0;
+      } else {
+        cashbackLeft = 0.0;
+        totalCost = parseFloat(paymentCost - accumulatedCashback).toFixed(2);
+      }
+
+      cashbackEarned = 0.0;
     } else {
       totalCost = paymentCost;
-      setCashbackLeft(accumulatedCashback);
+      cashbackEarned = parseFloat(
+        paymentCost * (cashbackPercent / 100.0)
+      ).toFixed(2);
+
+      cashbackLeft = accumulatedCashback;
     }
 
     setPaymentInfo({
       merchantName: merchantName,
       paymentCost: paymentCost,
-      cashback: isCashbackClicked ? cashbackLeft : 0.0,
+      cashback: accumulatedCashback,
       totalCost: totalCost,
+      cashbackEarned: cashbackEarned,
+      cashbackLeft: parseFloat(cashbackLeft).toFixed(2),
     });
   }, [isCashbackClicked]);
 
@@ -103,74 +117,81 @@ export const PayScreenPayment = (props) => {
               </Text>
             </View>
           </View>
-          <View
-            style={[
-              worldxstyles.flexRow,
-              { justifyContent: "space-between", width: "100%" },
-            ]}
-          >
+          {!isPaid && (
             <View
               style={[
                 worldxstyles.flexRow,
-                styles.containerMargin,
-                { marginHorizontal: 0 },
+                { justifyContent: "space-between", width: "100%" },
               ]}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  setIsCashbackClicked(!isCashbackClicked);
-                }}
+              <View
+                style={[
+                  worldxstyles.flexRow,
+                  styles.containerMargin,
+                  { marginHorizontal: 0 },
+                ]}
               >
-                <CircleContainer
-                  style={[
-                    worldxstyles.bordered,
-                    styles.circle,
-                    {
-                      backgroundColor: isCashbackClicked ? "white" : undefined,
-                    },
-                  ]}
-                />
-              </TouchableOpacity>
-              <Text style={[worldxstyles.text, { marginHorizontal: 10 }]}>
-                Use cashback ( ${accumulatedCashback} )
-              </Text>
-            </View>
-            <View>
-              <View>
-                <Text
-                  style={[
-                    worldxstyles.text,
-                    worldxstyles.textBold,
-                    { marginBottom: 5 },
-                  ]}
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsCashbackClicked(!isCashbackClicked);
+                  }}
                 >
-                  Pay Amount:
-                </Text>
-
-                <ShadowContainer
-                  style={[{ width: "100%" }]}
-                  distance={2}
-                  offset={[0, 0]}
-                >
-                  <LinearGradient
-                    style={[{ borderRadius: 10, padding: 10, width: "100%" }]}
-                    colors={[
-                      worldxstyleconstants.backgroundColor,
-                      "#3e2e55",
-                      worldxstyleconstants.backgroundColor,
+                  <CircleContainer
+                    style={[
+                      worldxstyles.bordered,
+                      styles.circle,
+                      {
+                        backgroundColor: isCashbackClicked
+                          ? "white"
+                          : undefined,
+                      },
                     ]}
-                    locations={[0.0, 0.5, 1.0]}
-                    start={{ x: 0.0, y: 0.0 }}
-                    end={{ x: 1.0, y: 0.0 }}
+                  />
+                </TouchableOpacity>
+                <Text style={[worldxstyles.text, { marginHorizontal: 10 }]}>
+                  Use cashback ( ${accumulatedCashback} )
+                </Text>
+              </View>
+
+              <View>
+                <View>
+                  <Text
+                    style={[
+                      worldxstyles.text,
+                      worldxstyles.textBold,
+                      { marginBottom: 5 },
+                    ]}
                   >
-                    <Text style={[worldxstyles.text, { textAlign: "center" }]}>
-                      ${paymentInfo.totalCost}
-                    </Text>
-                  </LinearGradient>
-                </ShadowContainer>
+                    Pay Amount:
+                  </Text>
+
+                  <ShadowContainer
+                    style={[{ width: "100%" }]}
+                    distance={2}
+                    offset={[0, 0]}
+                  >
+                    <LinearGradient
+                      style={[{ borderRadius: 10, padding: 10, width: "100%" }]}
+                      colors={[
+                        worldxstyleconstants.backgroundColor,
+                        "#3e2e55",
+                        worldxstyleconstants.backgroundColor,
+                      ]}
+                      locations={[0.0, 0.5, 1.0]}
+                      start={{ x: 0.0, y: 0.0 }}
+                      end={{ x: 1.0, y: 0.0 }}
+                    >
+                      <Text
+                        style={[worldxstyles.text, { textAlign: "center" }]}
+                      >
+                        ${paymentInfo.totalCost}
+                      </Text>
+                    </LinearGradient>
+                  </ShadowContainer>
+                </View>
               </View>
             </View>
-          </View>
+          )}
         </View>
         {/************** */}
         <View
@@ -244,39 +265,86 @@ export const PayScreenPayment = (props) => {
                 ${paymentInfo.totalCost}
               </Text>
             </View>
+            {isPaid && (
+              <View>
+                <View
+                  style={[
+                    worldxstyles.flexRow,
+                    { justifyContent: "space-between" },
+                  ]}
+                >
+                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                    Total
+                  </Text>
+                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                    ${paymentInfo.totalCost}
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    worldxstyles.flexRow,
+                    { justifyContent: "space-between" },
+                  ]}
+                >
+                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                    Total
+                  </Text>
+                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                    ${paymentInfo.totalCost}
+                  </Text>
+                </View>
+              </View>
+            )}
             <View style={[{ alignSelf: "flex-end" }]}>
-              <TouchableShadowButton
-                style={[{ paddingVertical: 10, paddingHorizontal: 20 }]}
-                containerStyle={{ marginVertical: 10 }}
-                onPress={() => {
-                  const cashback = parseFloat(
-                    (
-                      (paymentInfo.paymentCost * cashbackPercent) /
-                      100.0
-                    ).toFixed(2)
-                  );
+              {!isPaid ? (
+                <TouchableShadowButton
+                  style={[{ paddingVertical: 10, paddingHorizontal: 20 }]}
+                  containerStyle={{ marginVertical: 10 }}
+                  onPress={() => {
+                    dispatch(
+                      pushToCashbackHistoryArray({
+                        merchantName: paymentInfo.merchantName,
+                        cashback: parseFloat(
+                          paymentInfo.cashbackEarned
+                        ).toFixed(2),
+                      })
+                    );
 
-                  dispatch(
-                    pushToCashbackHistoryArray({
-                      merchantName: merchantName,
-                      cashback: cashback,
-                    })
-                  );
+                    if (!isCashbackClicked) {
+                      dispatch(
+                        incrementAccumulatedCashback(
+                          parseFloat(paymentInfo.cashbackEarned).toFixed(2)
+                        )
+                      );
+                    } else {
+                      dispatch(
+                        setAccumulatedCashback(
+                          parseFloat(paymentInfo.cashbackLeft).toFixed(2)
+                        )
+                      );
+                    }
 
-                  if (!isCashbackClicked) {
-                    dispatch(incrementAccumulatedCashback(cashback));
-                  } else {
-                    dispatch(setAccumulatedCashback(cashbackLeft.toFixed(2)));
-                  }
-
-                  setPaymentInfo(null); //stop rendering this component
-                  props.setPaymentData(null); //render back the parent component
-                }}
-              >
-                <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-                  PAY
-                </Text>
-              </TouchableShadowButton>
+                    setIsPaid(true);
+                  }}
+                >
+                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                    PAY
+                  </Text>
+                </TouchableShadowButton>
+              ) : (
+                <TouchableShadowButton
+                  style={[{ paddingVertical: 10, paddingHorizontal: 20 }]}
+                  containerStyle={{ marginVertical: 10 }}
+                  onPress={() => {
+                    setPaymentInfo(null); //stop rendering this component
+                    props.setPaymentData(null); //render back the parent component
+                  }}
+                >
+                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                    CLOSE
+                  </Text>
+                </TouchableShadowButton>
+              )}
             </View>
           </View>
         </View>
