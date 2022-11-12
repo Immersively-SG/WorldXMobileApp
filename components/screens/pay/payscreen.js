@@ -30,7 +30,7 @@ export const PayScreen = () => {
             padding: 20,
           }}
           onPress={() => {
-            //return setQrModalVisible(true);
+            //return setQrModalVisible(true); //uncomment for qr screen
             setPaymentData({});
           }}
         >

@@ -25,6 +25,7 @@ import { HomeScreen } from "./components/screens/home/homescreen.js";
 import { BottomNavigator } from "./components/navigator/bottomnavigator.js";
 import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bethereandearnscreen.js";
 import { PayScreen } from "./components/screens/pay/payscreen.js";
+import { LoginScreen } from "./components/screens/login/loginscreen.js";
 
 EStyleSheet.build(); //For global variables, but STILL MUST CALL OR ELSE THE STYLESHEETS WONT WORK
 LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
@@ -87,11 +88,12 @@ export default function App() {
             style={{ width: "100%", height: "100%", resizeMode: "cover" }}
           >
             <Stack.Navigator
-              initialRouteName="SpashScreen"
+              initialRouteName="LoginScreen"
               screenOptions={{
                 headerShown: false,
               }}
             >
+              <Stack.Screen name="LoginScreen" component={LoginScreen} />
               <Stack.Screen name="SplashScreen" component={SplashScreen} />
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="MarketPlace" component={MarketplaceScreen} />

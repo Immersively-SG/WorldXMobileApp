@@ -87,7 +87,8 @@ export const HomeScreen = ({ navigation }) => {
                   resizeMode: "contain",
                 },
               ]}
-            ></Image>
+            />
+
             <Text
               style={[
                 worldxstyles.text,
