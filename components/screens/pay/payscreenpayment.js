@@ -20,6 +20,7 @@ import {
   pushToCashbackHistoryArray,
   setAccumulatedCashback,
 } from "../../../features/paymentscreenslice";
+import * as Animatable from "react-native-animatable";
 
 export const PayScreenPayment = (props) => {
   const [isPaid, setIsPaid] = useState(false);
@@ -280,7 +281,11 @@ export const PayScreenPayment = (props) => {
               </Text>
             </View>
             {isPaid && !isCashbackClicked && (
-              <View>
+              <Animatable.View
+                useNativeDriver={true}
+                animation="bounceIn"
+                duration={1000}
+              >
                 <View
                   style={[
                     worldxstyles.flexRow,
@@ -303,7 +308,7 @@ export const PayScreenPayment = (props) => {
                     {parseFloat(paymentInfo.totalCost * 100).toFixed(0)}
                   </Text>
                 </View>
-              </View>
+              </Animatable.View>
             )}
             <View style={[{ alignSelf: "flex-end" }]}>
               {!isPaid ? (

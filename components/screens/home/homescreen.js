@@ -13,11 +13,16 @@ import { WorldXLogo } from "../../utility/backgroundimage/logos";
 import { TouchableIconLink } from "../../utility/touchable/touchableiconLink";
 import * as Clipboard from "expo-clipboard";
 import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
-import { RandomRangeInt } from "../../utility/math/math";
+import { RandomRangeInt, RandomString } from "../../utility/math/math";
+import { useSelector } from "react-redux";
 
 export const HomeScreen = ({ navigation }) => {
   const FADE_IN_DURATION = 1000;
-  const METAMASK_ID = "sdf56adf567ag5a5";
+  const METAMASK_ID = RandomString(15);
+
+  const worldxpoints = useSelector((state) => {
+    return state.worldxpoints;
+  });
 
   //if user presses back on this screen, exit app
   useEffect(
@@ -159,7 +164,7 @@ export const HomeScreen = ({ navigation }) => {
                       Lv
                     </Text>
                     <Text style={[worldxstyles.text, worldxstyles.textMedium]}>
-                      {RandomRangeInt(1, 50)}
+                      {worldxpoints.totalLevel}
                     </Text>
                   </View>
                 </View>
@@ -211,7 +216,7 @@ export const HomeScreen = ({ navigation }) => {
                       worldxstyles.textBold,
                     ]}
                   >
-                    {RandomRangeInt(100, 1000)}
+                    {worldxpoints.totalPoints}
                   </Text>
                   <Text style={worldxstyles.text}>Loyalty Points</Text>
                 </View>

@@ -12,6 +12,8 @@ import { PayScreenPayment } from "./payscreenpayment";
 
 import { useSelector } from "react-redux";
 
+import * as Animatable from "react-native-animatable";
+
 export const PayScreen = () => {
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
@@ -88,13 +90,18 @@ export const PayScreen = () => {
           />
         </>
       ) : (
-        <View style={[worldxstyles.container, { flex: 5, width: "100%" }]}>
+        <Animatable.View
+          useNativeDriver={true}
+          animation="fadeInUp"
+          duration={1000}
+          style={[worldxstyles.container, { flex: 5, width: "100%" }]}
+        >
           <PayScreenPayment
             style={[worldxstyles.container, { flex: 1, width: "100%" }]}
             setPaymentData={setPaymentData}
             onPaid={setIsPaid}
           />
-        </View>
+        </Animatable.View>
       )}
     </View>
   );

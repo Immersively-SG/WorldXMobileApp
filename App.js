@@ -1,5 +1,5 @@
 import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as React from "react";
 import {
   NavigationContainer,
@@ -88,7 +88,7 @@ export default function App() {
             style={{ width: "100%", height: "100%", resizeMode: "cover" }}
           >
             <Stack.Navigator
-              initialRouteName="Home"
+              initialRouteName="LoginScreen"
               screenOptions={{
                 headerShown: false,
               }}
