@@ -26,6 +26,7 @@ const loyaltyCardSlice = createSlice({
     },
     pushToCashbackHistoryArray: (state, action) => {
       state.cashbackHistoryArray.push(action.payload);
+
       return state;
     },
   },

@@ -16,19 +16,8 @@ export const PayScreenLoyaltyCard = (props) => {
     (state) => state.paymentScreen.loyaltyCardSlice
   );
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (payLoyaltyState.isLoyalty == false) {
-      const state = {
-        cardCashbackPercent:
-          CASHBACK_VALUES[RandomRangeInt(0, CASHBACK_VALUES.length - 1)],
-        accumulatedCashback: payLoyaltyState.accumulatedCashback,
-        isLoyalty: true,
-        cashbackHistoryArray: payLoyaltyState.cashbackHistoryArray,
-      };
-      dispatch(saveLoyaltyCardSlice(state));
-    }
-  }, []);
+  const [isPurchasedThisRender, setIsPurchasedThisRender] = useState(false);
+  useEffect(() => {}, []);
 
   const Front = () => {
     return (
@@ -57,6 +46,7 @@ export const PayScreenLoyaltyCard = (props) => {
 
         <TouchableShadowButton
           onPress={() => {
+            setIsPurchasedThisRender(true);
             card.current.flipHorizontal();
             //Generate a random cashback percentage if there is no loyalty purchased
             if (payLoyaltyState.isLoyalty == false) {
@@ -184,8 +174,16 @@ export const PayScreenLoyaltyCard = (props) => {
         flipZoom={0.001}
         duration={300}
       >
-        <Back />
-        <Front />
+        {payLoyaltyState.isLoyalty && !isPurchasedThisRender ? (
+          <Back />
+        ) : (
+          <Front />
+        )}
+        {payLoyaltyState.isLoyalty && !isPurchasedThisRender ? (
+          <Front />
+        ) : (
+          <Back />
+        )}
       </FlipCard>
     </View>
   );

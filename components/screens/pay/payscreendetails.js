@@ -17,8 +17,12 @@ import { Shadow } from "react-native-shadow-2";
 
 export const PayScreenDetails = (props) => {
   const cashbackHistory = useSelector(
-    (state) => state.paymentScreen.loyaltyCardSlice.cashbackHistory
+    (state) => state.paymentScreen.loyaltyCardSlice.cashbackHistoryArray
   );
+
+  const isLoyalty = useSelector((state) => {
+    return state.paymentScreen.loyaltyCardSlice.isLoyalty;
+  });
 
   return (
     <View style={props.style}>
@@ -31,7 +35,7 @@ export const PayScreenDetails = (props) => {
       >
         Recent cashback
       </Text>
-      {props.isLoyalty && cashbackHistory ? (
+      {isLoyalty && cashbackHistory.length > 0 ? (
         <FlatList
           style={{ width: "100%" }}
           data={cashbackHistory}
@@ -43,7 +47,7 @@ export const PayScreenDetails = (props) => {
                 duration={1000}
               >
                 <LinearGradient
-                  key={i}
+                  key={index}
                   style={[
                     worldxstyles.flexRow,
                     {

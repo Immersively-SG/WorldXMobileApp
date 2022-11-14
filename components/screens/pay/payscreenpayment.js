@@ -81,7 +81,7 @@ export const PayScreenPayment = (props) => {
             styles.containerMargin,
           ]}
         >
-          You are paying to:
+          {isPaid ? "You have paid:" : "You are paying to:"}
         </Text>
         {/************** */}
         <View
@@ -212,7 +212,7 @@ export const PayScreenPayment = (props) => {
                 worldxstyles.textSmallMedium,
               ]}
             >
-              Bill
+              {isPaid ? "Receipt" : "Bill"}
             </Text>
             <LinearGradient
               style={[
@@ -246,26 +246,40 @@ export const PayScreenPayment = (props) => {
               >
                 <Text style={[worldxstyles.text]}>Cashback</Text>
                 <Text style={[worldxstyles.text]}>
-                  -${paymentInfo.cashback}
+                  {isCashbackClicked
+                    ? "-$" + parseFloat(paymentInfo.cashback).toFixed(2)
+                    : "$0.00"}
                 </Text>
               </View>
             </View>
           </View>
-          <View style={{ marginVertical: 10 }}>
+          <View style={{ marginVertical: 50 }}>
             <View
               style={[
                 worldxstyles.flexRow,
                 { justifyContent: "space-between" },
               ]}
             >
-              <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+              <Text
+                style={[
+                  worldxstyles.text,
+                  worldxstyles.textBold,
+                  worldxstyles.textSmallMedium,
+                ]}
+              >
                 Total
               </Text>
-              <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+              <Text
+                style={[
+                  worldxstyles.text,
+                  worldxstyles.textBold,
+                  { textAlignVertical: "center" },
+                ]}
+              >
                 ${paymentInfo.totalCost}
               </Text>
             </View>
-            {isPaid && (
+            {isPaid && !isCashbackClicked && (
               <View>
                 <View
                   style={[
@@ -273,11 +287,9 @@ export const PayScreenPayment = (props) => {
                     { justifyContent: "space-between" },
                   ]}
                 >
-                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-                    Total
-                  </Text>
-                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-                    ${paymentInfo.totalCost}
+                  <Text style={[worldxstyles.text]}>Cashback earned</Text>
+                  <Text style={[worldxstyles.text, { color: "#22d606" }]}>
+                    ${paymentInfo.cashbackEarned}
                   </Text>
                 </View>
                 <View
@@ -286,11 +298,9 @@ export const PayScreenPayment = (props) => {
                     { justifyContent: "space-between" },
                   ]}
                 >
-                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-                    Total
-                  </Text>
-                  <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-                    ${paymentInfo.totalCost}
+                  <Text style={[worldxstyles.text]}>Points earned</Text>
+                  <Text style={[worldxstyles.text, { color: "#22d606" }]}>
+                    {parseFloat(paymentInfo.totalCost * 100).toFixed(0)}
                   </Text>
                 </View>
               </View>
@@ -325,6 +335,7 @@ export const PayScreenPayment = (props) => {
                     }
 
                     setIsPaid(true);
+                    props.onPaid(true);
                   }}
                 >
                   <Text style={[worldxstyles.text, worldxstyles.textBold]}>

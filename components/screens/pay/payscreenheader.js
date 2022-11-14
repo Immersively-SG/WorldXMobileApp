@@ -29,14 +29,14 @@ export const PayScreenHeader = (props) => {
             worldxstyles.textBold,
           ]}
         >
-          Scan and pay
+          {props.label}
         </Text>
 
         <Feather name="info" size={30} color="white" />
       </LinearGradient>
       <Text style={[worldxstyles.text]}>
-        Earn cashback for all your purchases when you have an active cashback
-        card.
+        {props.isRenderSubtext &&
+          "Earn cashback for all your purchases when you have an active cashbackcard."}
       </Text>
     </View>
   );

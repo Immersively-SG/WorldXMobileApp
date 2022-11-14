@@ -15,9 +15,9 @@ import { useSelector } from "react-redux";
 export const PayScreen = () => {
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
-
+  const [isPaid, setIsPaid] = useState(false);
   const isLoyalty = useSelector((state) => {
-    state.paymentScreen.loyaltyCardSlice.isLoyalty;
+    return state.paymentScreen.loyaltyCardSlice.isLoyalty;
   });
 
   const ScanButton = () => {
@@ -59,11 +59,14 @@ export const PayScreen = () => {
             justifyContent: "flex-start",
           },
         ]}
+        isRenderSubtext={paymentData == null}
+        label={isPaid ? "Payment Complete!" : "Scan and Pay"}
       />
       {!paymentData ? (
         <>
           <PayScreenLoyaltyCard
             style={[{ flex: 2, width: "100%", marginTop: 20 }]}
+            isLoyalty={isLoyalty}
           />
           <PayScreenDetails
             style={[
@@ -74,7 +77,6 @@ export const PayScreen = () => {
                 alignItems: "center",
               },
             ]}
-            isLoyalty={isLoyalty}
           />
 
           <ScanButton />
@@ -86,10 +88,11 @@ export const PayScreen = () => {
           />
         </>
       ) : (
-        <View style={[worldxstyles.container, { flex: 4, width: "100%" }]}>
+        <View style={[worldxstyles.container, { flex: 5, width: "100%" }]}>
           <PayScreenPayment
             style={[worldxstyles.container, { flex: 1, width: "100%" }]}
             setPaymentData={setPaymentData}
+            onPaid={setIsPaid}
           />
         </View>
       )}
