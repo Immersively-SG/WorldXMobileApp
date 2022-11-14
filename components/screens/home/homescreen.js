@@ -13,7 +13,7 @@ import { WorldXLogo } from "../../utility/backgroundimage/logos";
 import { TouchableIconLink } from "../../utility/touchable/touchableiconLink";
 import * as Clipboard from "expo-clipboard";
 import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
-import { RandomRangeInt, RandomString } from "../../utility/math/math";
+import { RandomString } from "../../utility/math/math";
 import { useSelector } from "react-redux";
 
 export const HomeScreen = ({ navigation }) => {

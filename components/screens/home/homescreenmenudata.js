@@ -1,8 +1,8 @@
 export const MenuIconsDataArray = [
   {
-    name: "MARKETPLACE",
+    name: "REWARDS",
     image: require("../../../assets/WorldX/Icons/UI/MarketplaceWhite.png"),
-    screenName: "MarketPlace",
+    screenName: "Rewards",
   },
   {
     name: "BE THERE & EARN",

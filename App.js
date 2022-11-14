@@ -20,12 +20,12 @@ import { Provider } from "react-redux";
 
 //SCREENS
 import { SplashScreen } from "./components/screens/splashscreen/splashscreen.js";
-import { MarketplaceScreen } from "./components/screens/marketplace/marketplacescreen.js";
 import { HomeScreen } from "./components/screens/home/homescreen.js";
 import { BottomNavigator } from "./components/navigator/bottomnavigator.js";
 import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bethereandearnscreen.js";
 import { PayScreen } from "./components/screens/pay/payscreen.js";
 import { LoginScreen } from "./components/screens/login/loginscreen.js";
+import { RewardsScreen } from "./components/screens/rewards/rewardsscreen";
 
 EStyleSheet.build(); //For global variables, but STILL MUST CALL OR ELSE THE STYLESHEETS WONT WORK
 LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
@@ -88,7 +88,7 @@ export default function App() {
             style={{ width: "100%", height: "100%", resizeMode: "cover" }}
           >
             <Stack.Navigator
-              initialRouteName="LoginScreen"
+              initialRouteName="Home"
               screenOptions={{
                 headerShown: false,
               }}
@@ -96,7 +96,7 @@ export default function App() {
               <Stack.Screen name="LoginScreen" component={LoginScreen} />
               <Stack.Screen name="SplashScreen" component={SplashScreen} />
               <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="MarketPlace" component={MarketplaceScreen} />
+              <Stack.Screen name="Rewards" component={RewardsScreen} />
               <Stack.Screen
                 name="BeThereAndEarn"
                 component={BeThereAndEarnScreen}

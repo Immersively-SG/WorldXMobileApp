@@ -18,7 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   incrementAccumulatedCashback,
   pushToCashbackHistoryArray,
-  setAccumulatedCashback,
+  setCurrentCashback,
 } from "../../../features/paymentscreenslice";
 import * as Animatable from "react-native-animatable";
 
@@ -31,6 +31,9 @@ export const PayScreenPayment = (props) => {
   const accumulatedCashback = useSelector(
     (state) => state.paymentScreen.loyaltyCardSlice.accumulatedCashback
   );
+  const currentCashback = useSelector(
+    (state) => state.paymentScreen.loyaltyCardSlice.currentCashback
+  );
   const dispatch = useDispatch();
 
   const [paymentInfo, setPaymentInfo] = useState(null); //implicitly used to conditional render this component
@@ -39,9 +42,10 @@ export const PayScreenPayment = (props) => {
   const [merchantName] = useState(RandomString(RandomRangeInt(3, 6)));
 
   useEffect(() => {
-    var totalCost;
+    var totalCost = paymentCost;
+    var cashbackLeft = accumulatedCashback;
     var cashbackEarned;
-    var cashbackLeft;
+
     if (isCashbackClicked) {
       if (paymentCost < accumulatedCashback) {
         cashbackLeft = parseFloat(accumulatedCashback - paymentCost).toFixed(2);
@@ -50,16 +54,14 @@ export const PayScreenPayment = (props) => {
         cashbackLeft = 0.0;
         totalCost = parseFloat(paymentCost - accumulatedCashback).toFixed(2);
       }
-
-      cashbackEarned = 0.0;
-    } else {
-      totalCost = paymentCost;
-      cashbackEarned = parseFloat(
-        paymentCost * (cashbackPercent / 100.0)
-      ).toFixed(2);
-
-      cashbackLeft = accumulatedCashback;
     }
+
+    //cashback earned is always based on totalcost (as long as you pay something, irregardless of using any cashback or not)
+    cashbackEarned = parseFloat(totalCost * (cashbackPercent / 100.0)).toFixed(
+      2
+    );
+
+    cashbackLeft += cashbackEarned;
 
     setPaymentInfo({
       merchantName: merchantName,
@@ -150,7 +152,7 @@ export const PayScreenPayment = (props) => {
                   />
                 </TouchableOpacity>
                 <Text style={[worldxstyles.text, { marginHorizontal: 10 }]}>
-                  Use cashback ( ${accumulatedCashback} )
+                  Use cashback ( ${currentCashback} )
                 </Text>
               </View>
 
@@ -280,7 +282,7 @@ export const PayScreenPayment = (props) => {
                 ${paymentInfo.totalCost}
               </Text>
             </View>
-            {isPaid && !isCashbackClicked && (
+            {isPaid && (
               <Animatable.View
                 useNativeDriver={true}
                 animation="bounceIn"
@@ -294,7 +296,7 @@ export const PayScreenPayment = (props) => {
                 >
                   <Text style={[worldxstyles.text]}>Cashback earned</Text>
                   <Text style={[worldxstyles.text, { color: "#22d606" }]}>
-                    ${paymentInfo.cashbackEarned}
+                    ${parseFloat(paymentInfo.cashbackEarned).toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -325,19 +327,16 @@ export const PayScreenPayment = (props) => {
                       })
                     );
 
-                    if (!isCashbackClicked) {
-                      dispatch(
-                        incrementAccumulatedCashback(
-                          parseFloat(paymentInfo.cashbackEarned).toFixed(2)
-                        )
-                      );
-                    } else {
-                      dispatch(
-                        setAccumulatedCashback(
-                          parseFloat(paymentInfo.cashbackLeft).toFixed(2)
-                        )
-                      );
-                    }
+                    dispatch(
+                      incrementAccumulatedCashback(
+                        parseFloat(paymentInfo.cashbackEarned).toFixed(2)
+                      )
+                    );
+                    dispatch(
+                      setCurrentCashback(
+                        parseFloat(paymentInfo.cashbackLeft).toFixed(2)
+                      )
+                    );
 
                     setIsPaid(true);
                     props.onPaid(true);
@@ -353,6 +352,8 @@ export const PayScreenPayment = (props) => {
                   containerStyle={{ marginVertical: 10 }}
                   onPress={() => {
                     setPaymentInfo(null); //stop rendering this component
+                    setIsPaid(false);
+                    props.onPaid(false);
                     props.setPaymentData(null); //render back the parent component
                   }}
                 >

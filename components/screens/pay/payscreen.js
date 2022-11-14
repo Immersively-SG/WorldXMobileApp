@@ -67,13 +67,13 @@ export const PayScreen = () => {
       {!paymentData ? (
         <>
           <PayScreenLoyaltyCard
-            style={[{ flex: 2, width: "100%", marginTop: 20 }]}
+            style={[{ flex: 3, width: "100%", marginTop: 20 }]}
             isLoyalty={isLoyalty}
           />
           <PayScreenDetails
             style={[
               {
-                flex: 4,
+                flex: 3,
                 width: "100%",
                 justifyContent: "flex-start",
                 alignItems: "center",
