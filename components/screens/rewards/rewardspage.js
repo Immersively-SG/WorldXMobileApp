@@ -14,7 +14,7 @@ import {
 import * as Animatable from "react-native-animatable";
 
 import { useSelector } from "react-redux";
-import { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 
 import { Shadow } from "react-native-shadow-2";
 
@@ -43,7 +43,7 @@ export const RewardsPage = (props) => {
     }
   };
 
-  const RedeemSection = (props) => {
+  const RedeemSection = React.memo((props) => {
     const redeemArray = useRef(
       useSelector((state) => state.worldxpoints.redeem)
     );
@@ -61,45 +61,9 @@ export const RewardsPage = (props) => {
         />
       </Animatable.View>
     );
-  };
+  });
 
-  const RewardsSection = (props) => {
-    return (
-      <Animatable.View
-        style={props.style}
-        animation={"fadeInUp"}
-        duration={500}
-      >
-        <Text style={[worldxstyles.text]}>sadasdadsadsad</Text>
-      </Animatable.View>
-    );
-  };
-
-  const PointsLogSection = (props) => {
-    return (
-      <Animatable.View
-        style={props.style}
-        animation={"fadeInUp"}
-        duration={500}
-      >
-        <Text style={[worldxstyles.text]}>asdsadsadsadsa</Text>
-      </Animatable.View>
-    );
-  };
-
-  const RedeemConfirmModal = (props) => {
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={props.isVisible}
-      onRequestClose={() => {
-        props.handleClose(false);
-      }}
-      statusBarTranslucent={true}
-    ></Modal>;
-  };
-
-  const renderRedeemItem = ({ item }) => {
+  const renderRedeemItem = useCallback(({ item }) => {
     return (
       <Shadow
         distance={2}
@@ -108,7 +72,15 @@ export const RewardsPage = (props) => {
         offset={[0, 5]}
         containerStyle={[styles.redeemElementShadowContainer]}
       >
-        <TouchableOpacity style={[styles.redeemElement, worldxstyles.bordered]}>
+        <TouchableOpacity
+          style={[styles.redeemElement, worldxstyles.bordered]}
+          onPress={() => {
+            setSelectedRedeemData({
+              name: item.name,
+              points: item.points,
+            });
+          }}
+        >
           <Shadow
             distance={1}
             startColor={"#000000"}
@@ -148,6 +120,42 @@ export const RewardsPage = (props) => {
         </TouchableOpacity>
       </Shadow>
     );
+  });
+
+  const RewardsSection = (props) => {
+    return (
+      <Animatable.View
+        style={props.style}
+        animation={"fadeInUp"}
+        duration={500}
+      >
+        <Text style={[worldxstyles.text]}>sadasdadsadsad</Text>
+      </Animatable.View>
+    );
+  };
+
+  const PointsLogSection = (props) => {
+    return (
+      <Animatable.View
+        style={props.style}
+        animation={"fadeInUp"}
+        duration={500}
+      >
+        <Text style={[worldxstyles.text]}>asdsadsadsadsa</Text>
+      </Animatable.View>
+    );
+  };
+
+  const RedeemConfirmModal = (props) => {
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={props.isVisible}
+      onRequestClose={() => {
+        props.handleClose(false);
+      }}
+      statusBarTranslucent={true}
+    ></Modal>;
   };
 
   return (
