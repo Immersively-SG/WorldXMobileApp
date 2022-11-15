@@ -38,6 +38,10 @@ export const PayScreenPayment = (props) => {
   const isLimitReached = useSelector(
     (state) => state.paymentScreen.loyaltyCardSlice.isLimitReached
   );
+
+  const isLoyalty = useSelector(
+    (state) => state.paymentScreen.loyaltyCardSlice.isLoyalty
+  );
   const dispatch = useDispatch();
 
   const [paymentInfo, setPaymentInfo] = useState(null); //implicitly used to conditional render this component
@@ -298,7 +302,7 @@ export const PayScreenPayment = (props) => {
                 easing={"ease-in-out-sine"}
                 duration={1000}
               >
-                {!isLimitReached && (
+                {!isLimitReached && isLoyalty && (
                   <View
                     style={[
                       worldxstyles.flexRow,

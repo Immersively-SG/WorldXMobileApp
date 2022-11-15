@@ -1,4 +1,9 @@
-import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  ImageBackground,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import * as React from "react";
 import {
@@ -109,6 +114,7 @@ export default function App() {
               navStateReady={navigationRef?.isReady()}
             />
           </ImageBackground>
+          <StatusBar hidden />
         </NavigationContainer>
       </SafeAreaView>
     </Provider>

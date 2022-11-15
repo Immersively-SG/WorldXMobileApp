@@ -1,10 +1,9 @@
-import { RewardsTabs } from "./rewardstabs";
 import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
+import { useState } from "react";
+import { RewardsTabs } from "./rewardstabs";
 import { RewardsHeader } from "./rewardsheader";
-import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
 import { RewardsPage } from "./rewardspage";
-import { useEffect, useState } from "react";
 
 export const RewardsScreen = () => {
   const [pageIndex, setPageIndex] = useState(0);

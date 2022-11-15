@@ -7,6 +7,8 @@
     <list default="true" id="c7f6bf0d-f2f0-4ab3-8597-7a0dd29fc1de" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/screens/rewards/rewardspage.js" beforeDir="false" afterPath="$PROJECT_DIR$/../components/screens/rewards/rewardspage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/utility/touchable/touchableshadowbutton.js" beforeDir="false" afterPath="$PROJECT_DIR$/../components/utility/touchable/touchableshadowbutton.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -1,6 +1,9 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
+import {
+  worldxstyleconstants,
+  worldxstyles,
+} from "../../../stylesheets/worldxstylesheet";
 
 //ICONS
 import { FontAwesome } from "@expo/vector-icons";
@@ -55,6 +58,7 @@ const styles = EStyleSheet.create({
     justifyContent: "center",
     flex: 1,
     aspectRatio: 2,
+    backgroundColor: worldxstyleconstants.backgroundColor,
   },
   tabstext: {},
 });
