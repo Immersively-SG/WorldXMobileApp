@@ -37,6 +37,7 @@ export const PayScreenDetails = (props) => {
       </Text>
       {isLoyalty && cashbackHistory.length > 0 ? (
         <FlatList
+          showsVerticalScrollIndicator={false}
           style={{ width: "100%" }}
           data={cashbackHistory}
           renderItem={({ item, index }) => {

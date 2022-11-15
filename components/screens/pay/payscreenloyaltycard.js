@@ -6,25 +6,29 @@ import * as Animatable from "react-native-animatable";
 import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
 
 import { useSelector, useDispatch } from "react-redux";
-import { rerollLoyaltyCard } from "../../../features/paymentscreenslice";
+import {
+  rerollLoyaltyCard,
+  setLimitReached,
+  resetLoyaltyCard,
+} from "../../../features/paymentscreenslice";
 
 export const PayScreenLoyaltyCard = (props) => {
   const card = useRef();
   const cardContainerRef = useRef();
+  const cashpackpercentRef = useRef();
   const payLoyaltyState = useSelector(
     (state) => state.paymentScreen.loyaltyCardSlice
   );
   const accumulatedCashback = useSelector(
     (state) => state.paymentScreen.loyaltyCardSlice.accumulatedCashback
   );
-  const [isLimitReached, setIsLimitReached] = useState(false);
 
   const dispatch = useDispatch();
   const [isPurchasedThisRender, setIsPurchasedThisRender] = useState(false);
   useEffect(() => {
     accumulatedCashback >= payLoyaltyState.cashbackLimit
-      ? setIsLimitReached(true)
-      : setIsLimitReached(false);
+      ? dispatch(setLimitReached(true))
+      : dispatch(setLimitReached(false));
   }, [accumulatedCashback]);
 
   const Overlay = () => {
@@ -54,14 +58,14 @@ export const PayScreenLoyaltyCard = (props) => {
             { textAlign: "center" },
           ]}
         >
-          Your card has reached the cashback limit. Discard this card and
-          purchase a new one to continue earning cashback!
+          Your card has reached the cashback limit. Purchase a new one to
+          continue earning cashback!
         </Text>
         <TouchableShadowButton
           onPress={() => {
             setIsPurchasedThisRender(true);
             card.current.flipHorizontal();
-            dispatch(rerollLoyaltyCard());
+            dispatch(resetLoyaltyCard());
 
             cardContainerRef.current.pulse(100);
           }}
@@ -75,7 +79,7 @@ export const PayScreenLoyaltyCard = (props) => {
               { textAlign: "center" },
             ]}
           >
-            DISCARD
+            PURCHASE
           </Text>
         </TouchableShadowButton>
       </View>
@@ -114,11 +118,6 @@ export const PayScreenLoyaltyCard = (props) => {
 
             cardContainerRef.current.rubberBand(500);
             card.current.flipHorizontal();
-
-            //Generate a random cashback percentage if there is no loyalty purchased
-            if (payLoyaltyState.isLoyalty == false) {
-              dispatch(rerollLoyaltyCard());
-            }
           }}
           style={{ paddingVertical: 5, paddingHorizontal: 10 }}
           containerStyle={[worldxstyles.container]}
@@ -149,7 +148,7 @@ export const PayScreenLoyaltyCard = (props) => {
               justifyContent: "space-between",
               alignItems: "center",
               padding: 10,
-              opacity: isLimitReached ? 0.5 : 1.0,
+              opacity: payLoyaltyState.isLimitReached ? 0.5 : 1.0,
             },
           ]}
         >
@@ -172,7 +171,8 @@ export const PayScreenLoyaltyCard = (props) => {
               >
                 Cashback Value:
               </Text>
-              <Text
+              <Animatable.Text
+                ref={cashpackpercentRef}
                 style={[
                   worldxstyles.text,
                   worldxstyles.textMedium,
@@ -181,7 +181,7 @@ export const PayScreenLoyaltyCard = (props) => {
                 ]}
               >
                 {payLoyaltyState.cardCashbackPercent}%
-              </Text>
+              </Animatable.Text>
             </View>
             <View>
               <Text style={[worldxstyles.text]}>
@@ -191,57 +191,59 @@ export const PayScreenLoyaltyCard = (props) => {
             </View>
           </View>
           {/* ------------  */}
-          <View
-            style={[
-              worldxstyles.flexRow,
-              {
-                alignItems: "center",
-                alignSelf: "flex-end",
-                marginHorizontal: 10,
-              },
-            ]}
-          >
-            <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-              Current Cashback:
-            </Text>
-            <Text
+          <View style={[{ alignSelf: "flex-end" }]}>
+            <View
               style={[
-                worldxstyles.text,
-                worldxstyles.textBold,
-                worldxstyles.textSmallMedium,
-                { color: "#ac8814" },
+                worldxstyles.flexRow,
+                {
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  marginHorizontal: 10,
+                },
               ]}
             >
-              ${parseFloat(payLoyaltyState.currentCashback).toFixed(2)}
-            </Text>
-          </View>
-          <View
-            style={[
-              worldxstyles.flexRow,
-              {
-                alignItems: "center",
-                alignSelf: "flex-end",
-                marginHorizontal: 10,
-              },
-            ]}
-          >
-            <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-              Accumulated Cashback:
-            </Text>
-            <Text
+              <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                Current Cashback:
+              </Text>
+              <Text
+                style={[
+                  worldxstyles.text,
+                  worldxstyles.textBold,
+                  worldxstyles.textSmallMedium,
+                  { color: "#ac8814" },
+                ]}
+              >
+                ${parseFloat(payLoyaltyState.currentCashback).toFixed(2)}
+              </Text>
+            </View>
+            <View
               style={[
-                worldxstyles.text,
-                worldxstyles.textBold,
-                worldxstyles.textSmallMedium,
-                { color: "#ac8814" },
+                worldxstyles.flexRow,
+                {
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  marginHorizontal: 10,
+                },
               ]}
             >
-              ${payLoyaltyState.accumulatedCashback.toFixed(2)}/$
-              {payLoyaltyState.cashbackLimit.toFixed(0)}
-            </Text>
+              <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                Accumulated Cashback:
+              </Text>
+              <Text
+                style={[
+                  worldxstyles.text,
+                  worldxstyles.textBold,
+                  worldxstyles.textSmallMedium,
+                  { color: "#ac8814" },
+                ]}
+              >
+                ${payLoyaltyState.accumulatedCashback.toFixed(2)}/$
+                {payLoyaltyState.cashbackLimit.toFixed(0)}
+              </Text>
+            </View>
           </View>
         </View>
-        {isLimitReached ? <Overlay /> : null}
+        {payLoyaltyState.isLimitReached ? <Overlay /> : null}
       </View>
     );
   };
@@ -272,6 +274,15 @@ export const PayScreenLoyaltyCard = (props) => {
         perspective={5000}
         flipZoom={0.001}
         duration={300}
+        onFlipEnd={(side) => {
+          if (side == 1) {
+            //Generate a random cashback percentage if there is no loyalty purchased
+            if (payLoyaltyState.isLoyalty == false) {
+              dispatch(rerollLoyaltyCard());
+              cashpackpercentRef.current.tada(1000);
+            }
+          }
+        }}
       >
         {payLoyaltyState.isLoyalty && !isPurchasedThisRender ? (
           <Back />

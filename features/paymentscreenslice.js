@@ -1,7 +1,7 @@
 import { createSlice, combineReducers } from "@reduxjs/toolkit";
 import { RandomRangeInt } from "../components/utility/math/math";
 
-const CASHBACK_VALUES = [10, 15, 20, 25, 50];
+const CASHBACK_VALUES = [100, 150, 200, 250, 500];
 const LIMIT_VALUES = [50, 100, 150, 200, 250, 300];
 
 const loyaltyInitialState = {
@@ -9,8 +9,9 @@ const loyaltyInitialState = {
   accumulatedCashback: 0.0,
   currentCashback: 0.0,
   cashbackHistoryArray: [],
-  cashbackLimit: 0.0,
+  cashbackLimit: 1.0, //just so we dont trigger limit reached just because 0 == 0
   isLoyalty: false,
+  isLimitReached: false,
 };
 
 const loyaltyCardSlice = createSlice({
@@ -28,6 +29,10 @@ const loyaltyCardSlice = createSlice({
     pushToCashbackHistoryArray: (state, action) => {
       state.cashbackHistoryArray.push(action.payload);
 
+      return state;
+    },
+    setLimitReached: (state, action) => {
+      state.isLimitReached = action.payload;
       return state;
     },
     resetLoyaltyCard: (state) => {
@@ -56,6 +61,8 @@ export const {
   setCurrentCashback,
   pushToCashbackHistoryArray,
   rerollLoyaltyCard,
+  setLimitReached,
+  resetLoyaltyCard,
 } = loyaltyCardSlice.actions;
 
 export default combineReducers({

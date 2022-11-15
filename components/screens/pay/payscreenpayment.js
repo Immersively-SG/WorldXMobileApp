@@ -19,6 +19,7 @@ import {
   incrementAccumulatedCashback,
   pushToCashbackHistoryArray,
   setCurrentCashback,
+  resetLoyaltyCard,
 } from "../../../features/paymentscreenslice";
 import * as Animatable from "react-native-animatable";
 
@@ -34,6 +35,9 @@ export const PayScreenPayment = (props) => {
   const currentCashback = useSelector(
     (state) => state.paymentScreen.loyaltyCardSlice.currentCashback
   );
+  const isLimitReached = useSelector(
+    (state) => state.paymentScreen.loyaltyCardSlice.isLimitReached
+  );
   const dispatch = useDispatch();
 
   const [paymentInfo, setPaymentInfo] = useState(null); //implicitly used to conditional render this component
@@ -43,32 +47,37 @@ export const PayScreenPayment = (props) => {
 
   useEffect(() => {
     var totalCost = paymentCost;
-    var cashbackLeft = accumulatedCashback;
+    var cashbackLeft = currentCashback;
     var cashbackEarned;
-
+    var cashbackUsed;
     if (isCashbackClicked) {
-      if (paymentCost < accumulatedCashback) {
-        cashbackLeft = parseFloat(accumulatedCashback - paymentCost).toFixed(2);
+      if (paymentCost < cashbackLeft) {
+        cashbackUsed = paymentCost;
         totalCost = 0.0;
+        cashbackLeft = parseFloat(cashbackLeft - paymentCost).toFixed(2);
       } else {
+        cashbackUsed = cashbackLeft;
+        totalCost = parseFloat(paymentCost - cashbackLeft).toFixed(2);
         cashbackLeft = 0.0;
-        totalCost = parseFloat(paymentCost - accumulatedCashback).toFixed(2);
       }
+    } else {
+      cashbackUsed = 0.0;
     }
 
     //cashback earned is always based on totalcost (as long as you pay something, irregardless of using any cashback or not)
-    cashbackEarned = parseFloat(totalCost * (cashbackPercent / 100.0)).toFixed(
-      2
-    );
+    //Also, if limit is reached, cannot earn cashback
+    cashbackEarned = !isLimitReached
+      ? parseFloat(totalCost * (cashbackPercent / 100.0)).toFixed(2)
+      : 0.0;
 
     cashbackLeft += cashbackEarned;
 
     setPaymentInfo({
       merchantName: merchantName,
       paymentCost: paymentCost,
-      cashback: accumulatedCashback,
       totalCost: totalCost,
       cashbackEarned: cashbackEarned,
+      cashbackUsed: cashbackUsed,
       cashbackLeft: parseFloat(cashbackLeft).toFixed(2),
     });
   }, [isCashbackClicked]);
@@ -152,7 +161,7 @@ export const PayScreenPayment = (props) => {
                   />
                 </TouchableOpacity>
                 <Text style={[worldxstyles.text, { marginHorizontal: 10 }]}>
-                  Use cashback ( ${currentCashback} )
+                  Use cashback ( ${currentCashback.toFixed(2)} )
                 </Text>
               </View>
 
@@ -247,10 +256,10 @@ export const PayScreenPayment = (props) => {
                   { justifyContent: "space-between" },
                 ]}
               >
-                <Text style={[worldxstyles.text]}>Cashback</Text>
+                <Text style={[worldxstyles.text]}>Cashback used</Text>
                 <Text style={[worldxstyles.text]}>
                   {isCashbackClicked
-                    ? "-$" + parseFloat(paymentInfo.cashback).toFixed(2)
+                    ? "$" + parseFloat(paymentInfo.cashbackUsed).toFixed(2)
                     : "$0.00"}
                 </Text>
               </View>
@@ -286,19 +295,22 @@ export const PayScreenPayment = (props) => {
               <Animatable.View
                 useNativeDriver={true}
                 animation="bounceIn"
+                easing={"ease-in-out-sine"}
                 duration={1000}
               >
-                <View
-                  style={[
-                    worldxstyles.flexRow,
-                    { justifyContent: "space-between" },
-                  ]}
-                >
-                  <Text style={[worldxstyles.text]}>Cashback earned</Text>
-                  <Text style={[worldxstyles.text, { color: "#22d606" }]}>
-                    ${parseFloat(paymentInfo.cashbackEarned).toFixed(2)}
-                  </Text>
-                </View>
+                {!isLimitReached && (
+                  <View
+                    style={[
+                      worldxstyles.flexRow,
+                      { justifyContent: "space-between" },
+                    ]}
+                  >
+                    <Text style={[worldxstyles.text]}>Cashback earned</Text>
+                    <Text style={[worldxstyles.text, { color: "#22d606" }]}>
+                      ${parseFloat(paymentInfo.cashbackEarned).toFixed(2)}
+                    </Text>
+                  </View>
+                )}
                 <View
                   style={[
                     worldxstyles.flexRow,
@@ -318,25 +330,28 @@ export const PayScreenPayment = (props) => {
                   style={[{ paddingVertical: 10, paddingHorizontal: 20 }]}
                   containerStyle={{ marginVertical: 10 }}
                   onPress={() => {
-                    dispatch(
-                      pushToCashbackHistoryArray({
-                        merchantName: paymentInfo.merchantName,
-                        cashback: parseFloat(
-                          paymentInfo.cashbackEarned
-                        ).toFixed(2),
-                      })
-                    );
+                    if (!isLimitReached) {
+                      dispatch(
+                        pushToCashbackHistoryArray({
+                          merchantName: paymentInfo.merchantName,
+                          cashback: parseFloat(
+                            paymentInfo.cashbackEarned
+                          ).toFixed(2),
+                        })
+                      );
 
-                    dispatch(
-                      incrementAccumulatedCashback(
-                        parseFloat(paymentInfo.cashbackEarned).toFixed(2)
-                      )
-                    );
-                    dispatch(
-                      setCurrentCashback(
-                        parseFloat(paymentInfo.cashbackLeft).toFixed(2)
-                      )
-                    );
+                      dispatch(
+                        incrementAccumulatedCashback(
+                          parseFloat(paymentInfo.cashbackEarned).toFixed(2)
+                        )
+                      );
+
+                      dispatch(
+                        setCurrentCashback(
+                          parseFloat(paymentInfo.cashbackLeft).toFixed(2)
+                        )
+                      );
+                    }
 
                     setIsPaid(true);
                     props.onPaid(true);

@@ -1,7 +1,7 @@
 import EStyleSheet from "react-native-extended-stylesheet";
 export const worldxstyleconstants = {
   lineColor: "#8f4dcf",
-  backgroundColor: "#1c0738",
+  backgroundColor: "#1c043c",
 };
 
 export const worldxstyles = EStyleSheet.create({

@@ -10,15 +10,30 @@ import { Entypo } from "@expo/vector-icons";
 export const RewardsTabs = (props) => {
   return (
     <View style={[props.style, styles.tabs]}>
-      <TouchableOpacity style={[styles.tabelement]}>
+      <TouchableOpacity
+        style={[worldxstyles.bordered, styles.tabelement]}
+        onPress={() => {
+          props.handleTabClicked(0);
+        }}
+      >
         <Entypo name="swap" size={24} color="white" />
         <Text style={[worldxstyles.text]}>Redeem</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.tabelement]}>
+      <TouchableOpacity
+        style={[worldxstyles.bordered, styles.tabelement]}
+        onPress={() => {
+          props.handleTabClicked(1);
+        }}
+      >
         <SimpleLineIcons name="present" size={24} color="white" />
         <Text style={[worldxstyles.text]}>Rewards</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.tabelement]}>
+      <TouchableOpacity
+        style={[worldxstyles.bordered, styles.tabelement]}
+        onPress={() => {
+          props.handleTabClicked(2);
+        }}
+      >
         <FontAwesome name="book" size={24} color="white" />
         <Text style={[worldxstyles.text]}>Points Log</Text>
       </TouchableOpacity>
@@ -29,14 +44,13 @@ export const RewardsTabs = (props) => {
 const styles = EStyleSheet.create({
   tabs: {
     alignSelf: "flex-end",
-    flex: 1,
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
   tabelement: {
-    ...worldxstyles.bordered,
+    borderRadius: "0.5rem",
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
