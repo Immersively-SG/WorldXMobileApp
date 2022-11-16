@@ -4,24 +4,17 @@ import {
   worldxstyles,
 } from "../../../stylesheets/worldxstylesheet";
 import * as Animatable from "react-native-animatable";
-import { RedeemSection, RedeemConfirmModal } from "./sections/redeemsection.js";
+import { RedeemSection } from "./sections/redeemsection.js";
+import { RewardsSection } from "./sections/rewardsection";
 import React, { useState } from "react";
 import { View, Text } from "react-native";
 const titleArray = ["Rewards", "Your Rewards", "Points Log"];
 
 export const RewardsPage = (props) => {
-  const [isShowRedeemModal, setIsShowRedeemModal] = useState(false);
-  const [selectedRedeemData, setSelectedRedeemData] = useState({});
-
   const PageSwitcher = (index) => {
     switch (index) {
       case 0: {
-        return (
-          <RedeemSection
-            handleSelectedRedeemData={setSelectedRedeemData}
-            handleModalVisible={setIsShowRedeemModal}
-          />
-        );
+        return <RedeemSection />;
       }
 
       case 1: {
@@ -50,19 +43,7 @@ export const RewardsPage = (props) => {
         {titleArray[props.pageIndex]}
       </Text>
       {PageSwitcher(props.pageIndex)}
-      <RedeemConfirmModal
-        isVisible={isShowRedeemModal}
-        handleClose={setIsShowRedeemModal}
-      />
     </View>
-  );
-};
-
-const RewardsSection = (props) => {
-  return (
-    <Animatable.View style={props.style} animation={"fadeInUp"} duration={500}>
-      <Text style={[worldxstyles.text]}>sadasdadsadsad</Text>
-    </Animatable.View>
   );
 };
 

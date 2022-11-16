@@ -5,9 +5,10 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  StyleSheet,
 } from "react-native";
 
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import EStyleSheet from "react-native-extended-stylesheet";
@@ -16,17 +17,20 @@ import {
   worldxstyles,
 } from "../../../../stylesheets/worldxstylesheet";
 import { TouchableShadowButton } from "../../../utility/touchable/touchableshadowbutton";
+import { addToReward } from "../../../../features/worldxpointsslice";
 
 export const RedeemSection = React.memo((props) => {
   const redeemArray = useRef(useSelector((state) => state.worldxpoints.redeem));
+  const [isShowRedeemModal, setIsShowRedeemModal] = useState(false);
+  const [selectedRedeemData, setSelectedRedeemData] = useState({});
   const dispatch = useDispatch();
 
   const renderRedeemItem = useCallback(({ item }) => {
     return (
       <RedeemElement
         item={item}
-        handleSelectedRedeemData={props.handleSelectedRedeemData}
-        handleModalVisible={props.handleModalVisible}
+        handleSelectedRedeemData={setSelectedRedeemData}
+        handleModalVisible={setIsShowRedeemModal}
       />
     );
   }, []);
@@ -43,6 +47,11 @@ export const RedeemSection = React.memo((props) => {
         data={redeemArray.current}
         renderItem={renderRedeemItem}
       />
+      <RedeemConfirmModal
+        isVisible={isShowRedeemModal}
+        handleClose={setIsShowRedeemModal}
+        redeemData={selectedRedeemData}
+      />
     </Animatable.View>
   );
 });
@@ -53,8 +62,9 @@ const RedeemElement = React.memo((props) => {
       style={[styles.redeemElement, worldxstyles.bordered]}
       onPress={() => {
         props.handleSelectedRedeemData({
-          name: props.item.name,
+          name: "$" + props.item.dollar + " " + props.item.name + " Voucher",
           points: props.item.points,
+          icon: props.item.icon,
         });
         props.handleModalVisible(true);
       }}
@@ -94,10 +104,20 @@ const RedeemElement = React.memo((props) => {
 });
 
 export const RedeemConfirmModal = (props) => {
+  const points = useSelector((state) => state.worldxpoints.totalPoints);
+  const [isAbleToBuy, setIsAbleToBuy] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (points < props.redeemData.points) {
+      setIsAbleToBuy(false);
+    } else {
+      setIsAbleToBuy(true);
+    }
+  }, [props.redeemData]);
+
   return (
     <Modal
-      style={[styles.modal]}
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={props.isVisible}
       onRequestClose={() => {
@@ -105,12 +125,60 @@ export const RedeemConfirmModal = (props) => {
       }}
       statusBarTranslucent={true}
     >
-      <Text style={[worldxstyles.text, worldxstyles.textSmallMedium]}>
-        sdfdsfsdf
-      </Text>
-      <TouchableShadowButton onPress={() => props.handleClose(false)}>
-        <Text style={[worldxstyles.text, worldxstyles.textBold]}> CLOSE </Text>
-      </TouchableShadowButton>
+      <View style={[{ flex: 1, justifyContent: "center" }]}>
+        <View
+          style={[styles.modalBackgroundOverlay, StyleSheet.absoluteFill]}
+        ></View>
+        <View style={[worldxstyles.bordered, styles.modal]}>
+          <Image
+            source={props.redeemData.icon}
+            style={[styles.redeemlogo, worldxstyles.bordered]}
+          />
+          <Text style={[worldxstyles.text, styles.modalText]}>
+            You are about to redeem {props.redeemData.name}
+          </Text>
+          <Text
+            style={[
+              worldxstyles.text,
+              worldxstyles.textBold,
+              styles.modalText,
+              { color: isAbleToBuy ? "white" : "red" },
+            ]}
+          >
+            {isAbleToBuy ? "Confirm redeem?" : "Not enough points!"}
+          </Text>
+
+          <View style={[worldxstyles.flexRow]}>
+            {isAbleToBuy ? (
+              <TouchableShadowButton
+                style={[styles.button]}
+                onPress={() =>
+                  dispatch(
+                    addToReward({
+                      name: props.redeemData.name,
+                      icon: props.redeemData.icon,
+                    })
+                  )
+                }
+              >
+                <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                  REDEEM
+                </Text>
+              </TouchableShadowButton>
+            ) : null}
+
+            <TouchableShadowButton
+              style={[styles.button]}
+              containerStyle={[styles.buttonShadow]}
+              onPress={() => props.handleClose(false)}
+            >
+              <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                CLOSE
+              </Text>
+            </TouchableShadowButton>
+          </View>
+        </View>
+      </View>
     </Modal>
   );
 };
@@ -135,9 +203,26 @@ const styles = EStyleSheet.create({
     backgroundColor: worldxstyleconstants.backgroundColor,
   },
   modal: {
-    flex: 1,
     width: "100%",
+
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: worldxstyleconstants.backgroundColor,
+    padding: "1rem",
+  },
+  modalBackgroundOverlay: {
+    flex: 1,
+    backgroundColor: "black",
+    opacity: 0.8,
+    position: "absolute",
+  },
+  button: {
+    padding: "0.5rem",
+  },
+  buttonShadow: {
+    marginHorizontal: "1rem",
+  },
+  modalText: {
+    margin: "1rem",
   },
 });

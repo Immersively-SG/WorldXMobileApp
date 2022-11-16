@@ -19,6 +19,29 @@ const RedeemData = [
   },
 ];
 
+const TestReward = [
+  {
+    name: "Grab",
+    icon: require("../assets/WorldX/Logo/grablogo.png"),
+  },
+  {
+    name: "Grab",
+    icon: require("../assets/WorldX/Logo/grablogo.png"),
+  },
+  {
+    name: "Grab",
+    icon: require("../assets/WorldX/Logo/grablogo.png"),
+  },
+  {
+    name: "Grab",
+    icon: require("../assets/WorldX/Logo/grablogo.png"),
+  },
+  {
+    name: "Grab",
+    icon: require("../assets/WorldX/Logo/grablogo.png"),
+  },
+];
+
 const GenerateRedeem = () => {
   var redeemArray = [];
 
@@ -44,7 +67,7 @@ const worldxpointsInitialState = {
   totalLevel: 0,
   pointsLog: [],
   redeem: GenerateRedeem(),
-  reward: [],
+  reward: TestReward,
 };
 
 const worldxpointsSlice = createSlice({
@@ -59,9 +82,14 @@ const worldxpointsSlice = createSlice({
       state.totalLevel += action.payload;
       return state;
     },
+    addToReward: (state, action) => {
+      state.reward.push(action.payload);
+      return state;
+    },
   },
 });
 
-export const { incrementPoints, incrementLevel } = worldxpointsSlice.actions;
+export const { incrementPoints, incrementLevel, addToReward } =
+  worldxpointsSlice.actions;
 
 export default worldxpointsSlice.reducer;
