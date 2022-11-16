@@ -17,7 +17,10 @@ import {
   worldxstyles,
 } from "../../../../stylesheets/worldxstylesheet";
 import { TouchableShadowButton } from "../../../utility/touchable/touchableshadowbutton";
-import { addToReward } from "../../../../features/worldxpointsslice";
+import {
+  addToReward,
+  incrementPoints,
+} from "../../../../features/worldxpointsslice";
 
 export const RedeemSection = React.memo((props) => {
   const redeemArray = useRef(useSelector((state) => state.worldxpoints.redeem));
@@ -37,6 +40,7 @@ export const RedeemSection = React.memo((props) => {
 
   return (
     <Animatable.View
+      useNativeDriver={true}
       style={[props.style, { flex: 1 }]}
       animation={"fadeInUp"}
       duration={500}
@@ -134,8 +138,20 @@ export const RedeemConfirmModal = (props) => {
             source={props.redeemData.icon}
             style={[styles.redeemlogo, worldxstyles.bordered]}
           />
-          <Text style={[worldxstyles.text, styles.modalText]}>
-            You are about to redeem {props.redeemData.name}
+          <Text
+            style={[
+              worldxstyles.text,
+              styles.modalText,
+              { textAlign: "center" },
+            ]}
+          >
+            You are about to redeem{" "}
+            <Text style={[worldxstyles.textBold]}>{props.redeemData.name}</Text>{" "}
+            for{" "}
+            <Text style={[worldxstyles.textBold]}>
+              {props.redeemData.points}
+            </Text>{" "}
+            points.
           </Text>
           <Text
             style={[
@@ -152,14 +168,16 @@ export const RedeemConfirmModal = (props) => {
             {isAbleToBuy ? (
               <TouchableShadowButton
                 style={[styles.button]}
-                onPress={() =>
+                onPress={() => {
+                  dispatch(incrementPoints(-props.redeemData.points)); //decrement
                   dispatch(
                     addToReward({
                       name: props.redeemData.name,
                       icon: props.redeemData.icon,
                     })
-                  )
-                }
+                  );
+                  props.handleClose(false);
+                }}
               >
                 <Text style={[worldxstyles.text, worldxstyles.textBold]}>
                   REDEEM

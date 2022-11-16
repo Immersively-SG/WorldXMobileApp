@@ -34,7 +34,14 @@ export const RewardsSection = (props) => {
           style={[styles.rewardlogo, worldxstyles.bordered]}
         />
         <View style={[styles.rewarddetails]}>
-          <Text style={[worldxstyles.text, { alignSelf: "flex-start" }]}>
+          <Text
+            style={[
+              worldxstyles.text,
+              worldxstyles.textBold,
+              worldxstyles.textSmallMedium,
+              { alignSelf: "flex-start" },
+            ]}
+          >
             {item.name} Voucher
           </Text>
           <View style={{ alignSelf: "flex-end" }}>
@@ -60,6 +67,7 @@ export const RewardsSection = (props) => {
 
   return (
     <Animatable.View
+      useNativeDriver={true}
       style={[props.style]}
       animation={"fadeInUp"}
       duration={500}
@@ -96,8 +104,10 @@ const ConfirmModal = (props) => {
       }}
       statusBarTranslucent={true}
     >
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <BackgroundOverlay />
+      <BackgroundOverlay />
+      <View
+        style={[worldxstyles.container, { flex: 1, justifyContent: "center" }]}
+      >
         <View style={[styles.confirmmodal, worldxstyles.bordered]}>
           <Image
             source={props.selectedRewardData.icon}
@@ -137,8 +147,12 @@ const ConfirmModal = (props) => {
 const RewardModal = (props) => {
   const [code, setCode] = useState("");
   useEffect(() => {
-    setCode(RandomString(20));
+    setCode(RandomString(15));
   }, [props]);
+
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(code);
+  };
 
   return (
     <Modal
@@ -150,10 +164,13 @@ const RewardModal = (props) => {
       }}
       statusBarTranslucent={true}
     >
+      <BackgroundOverlay />
       <View
-        style={[{ flex: 1, justifyContent: "center", alignItems: "center" }]}
+        style={[
+          worldxstyles.container,
+          { flex: 1, justifyContent: "center", alignItems: "center" },
+        ]}
       >
-        <BackgroundOverlay />
         <Text
           style={[
             worldxstyles.text,
@@ -190,7 +207,7 @@ const RewardModal = (props) => {
                 {code}
               </Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={copyToClipboard}>
               <Text
                 style={[
                   worldxstyles.text,

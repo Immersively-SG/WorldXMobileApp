@@ -19,29 +19,6 @@ const RedeemData = [
   },
 ];
 
-const TestReward = [
-  {
-    name: "Grab",
-    icon: require("../assets/WorldX/Logo/grablogo.png"),
-  },
-  {
-    name: "Grab",
-    icon: require("../assets/WorldX/Logo/grablogo.png"),
-  },
-  {
-    name: "Grab",
-    icon: require("../assets/WorldX/Logo/grablogo.png"),
-  },
-  {
-    name: "Grab",
-    icon: require("../assets/WorldX/Logo/grablogo.png"),
-  },
-  {
-    name: "Grab",
-    icon: require("../assets/WorldX/Logo/grablogo.png"),
-  },
-];
-
 const GenerateRedeem = () => {
   var redeemArray = [];
 
@@ -63,11 +40,11 @@ const GenerateRedeem = () => {
 };
 
 const worldxpointsInitialState = {
-  totalPoints: 0,
+  totalPoints: 20000,
   totalLevel: 0,
   pointsLog: [],
   redeem: GenerateRedeem(),
-  reward: TestReward,
+  reward: [],
 };
 
 const worldxpointsSlice = createSlice({

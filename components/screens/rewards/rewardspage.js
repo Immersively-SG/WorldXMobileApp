@@ -49,7 +49,12 @@ export const RewardsPage = (props) => {
 
 const PointsLogSection = (props) => {
   return (
-    <Animatable.View style={props.style} animation={"fadeInUp"} duration={500}>
+    <Animatable.View
+      style={props.style}
+      animation={"fadeInUp"}
+      duration={500}
+      useNativeDriver={true}
+    >
       <Text style={[worldxstyles.text]}>asdsadsadsadsa</Text>
     </Animatable.View>
   );

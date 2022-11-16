@@ -14,17 +14,20 @@ import {
   getDistance,
 } from "geolib";
 import * as Animatable from "react-native-animatable";
+import { RandomString } from "./../../utility/math/math";
+import AnimatedNumbers from "react-native-animated-numbers";
 
 import { Particle } from "../../utility/particle/particle";
+import EStyleSheet from "react-native-extended-stylesheet";
 
 export const BeThereAndEarnScreen = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [geocode, setGeocode] = useState(null);
   const [expCirclesArray, setExpCirclesArray] = useState(null);
   const [expCirclesDataArray, setExpCirclesDataArray] = useState(null);
   const [isInExpCircle, setIsInExpCircle] = useState(false);
   const [nearestExpCircle, setNearestExpCircle] = useState(null);
+  const [currentExpCircle, setCurrentExpCircle] = useState(null);
 
   const mapRef = createRef();
   const goToMyLocation = async (_latitude, _longitude) => {
@@ -33,22 +36,27 @@ export const BeThereAndEarnScreen = () => {
         latitude: _latitude,
         longitude: _longitude,
       },
-      zoom: 20,
+
+      zoom: 18,
     });
   };
 
   const updateLocation = async () => {
     //fetch location updates
-
-    let location = await Location.getCurrentPositionAsync({
-      timeInterval: 5000,
+    const locationPromise = Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.BestForNavigation,
+      distanceInterval: 10,
     });
 
-    let geocode = await Location.reverseGeocodeAsync(location.coords);
+    const [location] = await Promise.all([locationPromise]);
+
     setLocation(location);
-    setGeocode(geocode);
+
+    // const geocodePromise = Location.reverseGeocodeAsync(location.coords);
+    // setGeocode(geocode);
   };
-  //ON MOUNT
+
+  //////////ON MOUNT/////////////////
   useEffect(() => {
     var interval;
     (async () => {
@@ -58,14 +66,15 @@ export const BeThereAndEarnScreen = () => {
         return;
       }
 
-      //FIRST TIME SET POS
-      let location = await Location.getCurrentPositionAsync({
-        timeInterval: 5000,
+      //fetch location updates
+      const locationPromise = Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.BestForNavigation,
+        distanceInterval: 10,
       });
 
-      let geocode = await Location.reverseGeocodeAsync(location.coords);
+      const [location] = await Promise.all([locationPromise]);
+
       setLocation(location);
-      setGeocode(geocode);
 
       const _expCircleDataArray = GenerateExpCirclesData({
         userlatlong: {
@@ -73,10 +82,12 @@ export const BeThereAndEarnScreen = () => {
           longitude: location.coords.longitude,
         },
         numCircles: 5,
-        minRadius: 5,
-        maxRadius: 10,
-        minDistance: -0.00025,
-        maxDistance: 0.00025,
+        minRadius: 20,
+        maxRadius: 30,
+        // minDistance: -0.00075,
+        // maxDistance: 0.00075,
+        minDistance: 0,
+        maxDistance: 0,
       });
 
       //generate exp circles data
@@ -108,29 +119,34 @@ export const BeThereAndEarnScreen = () => {
     };
   }, []);
 
-  //eveytime the location changes
+  //everytime the location changes
   useEffect(() => {
     if (location == null) return;
-
-    //animate map to go to point
-    goToMyLocation(location.coords.latitude, location.coords.longitude);
 
     //check if user is in exp circle
     var isUserInAnyCircle = false;
     expCirclesDataArray?.forEach((element) => {
-      isUserInAnyCircle |= isPointWithinRadius(
-        {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-        {
-          latitude: element.latitude,
-          longitude: element.longitude,
-        },
-        element.radius
-      );
+      if (
+        isPointWithinRadius(
+          {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          },
+          {
+            latitude: element.latitude,
+            longitude: element.longitude,
+          },
+          element.radius
+        )
+      ) {
+        setCurrentExpCircle(element);
+        isUserInAnyCircle = true;
+        return;
+      }
     });
+
     setIsInExpCircle(isUserInAnyCircle);
+    if (!isUserInAnyCircle) setCurrentExpCircle(null);
 
     if (expCirclesDataArray == null) return;
     //calculate details to nearest exp circle
@@ -152,6 +168,9 @@ export const BeThereAndEarnScreen = () => {
       direction: directionToCircle,
       distance: distanceToCircle,
     });
+
+    //animate map to go to point
+    goToMyLocation(location.coords.latitude, location.coords.longitude);
   }, [location]);
 
   return (
@@ -171,7 +190,7 @@ export const BeThereAndEarnScreen = () => {
             height: "100%",
             width: "100%",
           }}
-        ></Image>
+        />
       </View>
       <View style={[styles.container, { flex: 5 }]}>
         <View
@@ -179,7 +198,7 @@ export const BeThereAndEarnScreen = () => {
             styles.mapContainer,
             styles.container,
             worldxstyles.bordered,
-            { flex: 5, overflow: "hidden" },
+            { flex: 2, overflow: "hidden" },
           ]}
         >
           <MapView
@@ -201,30 +220,8 @@ export const BeThereAndEarnScreen = () => {
             )}
           </MapView>
         </View>
-        <View
-          style={[
-            styles.container,
-            styles.container,
-            worldxstyles.bordered,
-            { width: "80%" },
-          ]}
-        >
-          {/* {geocode != null ? (
-            <Text
-              style={[
-                worldxstyles.text,
-                {
-                  textAlign: "center",
-                  position: "absolute",
-                  top: 0,
-                  marginTop: 10,
-                },
-              ]}
-            >{`${geocode[0].city} , ${geocode[0].country}, ${geocode[0].district}, ${geocode[0].isoCountryCode}, ${geocode[0].name}, ${geocode[0].postalCode}, ${geocode[0].region}, ${geocode[0].street}, ${geocode[0].streetNumber}, ${geocode[0].subregion}, ${geocode[0].timezone}`}</Text>
-          ) : (
-            <Text style={worldxstyles.text}>Waiting...</Text>
-          )} */}
-          {isInExpCircle ? (
+        <View style={[{ width: "100%", flex: 1 }]}>
+          {isInExpCircle && currentExpCircle ? (
             <View
               style={{
                 flex: 1,
@@ -250,25 +247,61 @@ export const BeThereAndEarnScreen = () => {
                   <Particle />
                 </Emitter>
               </View>
-              <View style={[{ flex: 1 }]}>
-                <Text style={[worldxstyles.text, { textAlign: "center" }]}>
-                  You are in a reward circle!
+              {/**************************** */}
+              <View
+                style={[
+                  {
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                  },
+                ]}
+              >
+                <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                  You are in a reward location!
                 </Text>
-
-                <Text
+                <View
                   style={[
-                    worldxstyles.text,
-                    worldxstyles.textSmallMedium,
                     {
-                      textAlign: "center",
-                      textShadowRadius: 20,
-                      textShadowColor: "white",
+                      alignItems: "center",
+                      width: "100%",
+                      justifyContent: "space-between",
                     },
+                    worldxstyles.bordered,
+                    worldxstyles.flexRow,
                   ]}
                 >
-                  (Start collecting points!)
-                </Text>
+                  <View
+                    style={[worldxstyles.flexRow, { alignItems: "center" }]}
+                  >
+                    <Image
+                      source={require("../../../assets/WorldX/Logo/grablogo.png")}
+                      style={[worldxstyles.bordered, styles.merchantlogo]}
+                    />
+                    <Text
+                      style={[
+                        worldxstyles.text,
+                        worldxstyles.textBold,
+                        { textAlign: "center" },
+                      ]}
+                    >
+                      {currentExpCircle.name}
+                      {"\n"}Mall
+                    </Text>
+                  </View>
+                  <View>
+                    <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                      Collecting Points
+                    </Text>
+                    <AnimatedNumbers
+                      style={[worldxstyles.text, worldxstyles.textBold]}
+                      animateToNumber={1000}
+                      r
+                    />
+                  </View>
+                </View>
               </View>
+              {/**************************** */}
               <View>
                 <Emitter
                   numberOfParticles={1}
@@ -359,16 +392,20 @@ const GenerateExpCirclesData = (props) => {
     };
 
     circleDataArray.push({
+      index: i,
+      points: 0,
       latitude: spawnlatlong.latitude,
       longitude: spawnlatlong.longitude,
       radius: radius,
+      name: RandomString(6),
+      url: "https://www.worldx.co",
     });
   }
 
   return circleDataArray.map((element) => element);
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
@@ -377,6 +414,13 @@ const styles = StyleSheet.create({
   mapContainer: {
     width: "100%",
     height: "100%",
+  },
+  merchantlogo: {
+    resizeMethod: "contain",
+    height: "5rem",
+    width: "5rem",
+    aspectRatio: 1,
+    backgroundColor: worldxstyleconstants.backgroundColor,
   },
 
   customMapStyle: [
