@@ -12,6 +12,7 @@ export const TouchableShadowButton = (props) => {
       containerStyle={props.containerStyle}
     >
       <TouchableOpacity
+        {...props}
         style={[
           worldxstyles.bordered,
           {

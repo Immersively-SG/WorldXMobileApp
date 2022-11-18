@@ -1,7 +1,9 @@
 import EStyleSheet from "react-native-extended-stylesheet";
 export const worldxstyleconstants = {
   lineColor: "#8f4dcf",
+  disabledLineColor: "rgba(77, 51, 102,0.5)",
   backgroundColor: "#1c043c",
+  disabledColor: "rgba(28, 4, 60, 0.3)",
 };
 
 export const worldxstyles = EStyleSheet.create({
@@ -13,7 +15,7 @@ export const worldxstyles = EStyleSheet.create({
   bordered: {
     borderStyle: "solid",
     borderRadius: "1rem",
-    borderWidth: "0.2rem",
+    borderWidth: "0.1rem",
     borderColor: worldxstyleconstants.lineColor,
   },
   flexRow: {
@@ -24,6 +26,9 @@ export const worldxstyles = EStyleSheet.create({
   },
   text: {
     color: "#ffffff",
+  },
+  textVerySmall: {
+    fontSize: "0.7rem",
   },
   textSmallMedium: {
     fontSize: "1.2rem",

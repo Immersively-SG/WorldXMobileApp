@@ -32,8 +32,8 @@ export const PayScreen = () => {
             padding: 20,
           }}
           onPress={() => {
-            //return setQrModalVisible(true); //uncomment for qr screen
-            setPaymentData({});
+            return setQrModalVisible(true); //uncomment for qr screen
+            //setPaymentData({});
           }}
         >
           <MaterialCommunityIcons name="qrcode-scan" size={30} color="white" />

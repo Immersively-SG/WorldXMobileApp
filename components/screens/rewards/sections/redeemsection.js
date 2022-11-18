@@ -18,9 +18,13 @@ import {
 } from "../../../../stylesheets/worldxstylesheet";
 import { TouchableShadowButton } from "../../../utility/touchable/touchableshadowbutton";
 import {
+  addToPointsLog,
   addToReward,
   incrementPoints,
 } from "../../../../features/worldxpointsslice";
+import { RandomString } from "../../../utility/math/math";
+import { toastConfig } from "../../../utility/config/toastconfig";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 export const RedeemSection = React.memo((props) => {
   const redeemArray = useRef(useSelector((state) => state.worldxpoints.redeem));
@@ -46,7 +50,7 @@ export const RedeemSection = React.memo((props) => {
       duration={500}
     >
       <FlatList
-        style={[props.style, { flex: 1 }]}
+        style={[{ flex: 1 }]}
         showsVerticalScrollIndicator={false}
         data={redeemArray.current}
         renderItem={renderRedeemItem}
@@ -89,7 +93,7 @@ const RedeemElement = React.memo((props) => {
             },
           ]}
         >
-          ${props.item.dollar} {props.item.name} Voucher
+          ${props.item.dollar} {props.item.name}
         </Text>
         <Text
           style={[
@@ -174,8 +178,20 @@ export const RedeemConfirmModal = (props) => {
                     addToReward({
                       name: props.redeemData.name,
                       icon: props.redeemData.icon,
+                      code: RandomString(15),
                     })
                   );
+                  dispatch(
+                    addToPointsLog({
+                      name: props.redeemData.name,
+                      points: -props.redeemData.points,
+                    })
+                  );
+                  Toast.show({
+                    type: "info",
+                    text1: "You have redeemed " + props.redeemData.name + "!",
+                  });
+
                   props.handleClose(false);
                 }}
               >

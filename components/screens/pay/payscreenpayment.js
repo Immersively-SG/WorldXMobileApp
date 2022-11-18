@@ -22,6 +22,10 @@ import {
   resetLoyaltyCard,
 } from "../../../features/paymentscreenslice";
 import * as Animatable from "react-native-animatable";
+import {
+  addToPointsLog,
+  incrementPoints,
+} from "../../../features/worldxpointsslice";
 
 export const PayScreenPayment = (props) => {
   const [isPaid, setIsPaid] = useState(false);
@@ -83,6 +87,7 @@ export const PayScreenPayment = (props) => {
       cashbackEarned: cashbackEarned,
       cashbackUsed: cashbackUsed,
       cashbackLeft: parseFloat(cashbackLeft).toFixed(2),
+      pointsEarned: parseFloat(totalCost * 100).toFixed(0),
     });
   }, [isCashbackClicked]);
 
@@ -323,7 +328,7 @@ export const PayScreenPayment = (props) => {
                 >
                   <Text style={[worldxstyles.text]}>Points earned</Text>
                   <Text style={[worldxstyles.text, { color: "#22d606" }]}>
-                    {parseFloat(paymentInfo.totalCost * 100).toFixed(0)}
+                    {paymentInfo.pointsEarned}
                   </Text>
                 </View>
               </Animatable.View>
@@ -357,6 +362,14 @@ export const PayScreenPayment = (props) => {
                       );
                     }
 
+                    dispatch(
+                      addToPointsLog({
+                        name: paymentInfo.merchantName + " Merchant Purchase",
+                        points: paymentInfo.pointsEarned,
+                      })
+                    );
+
+                    dispatch(incrementPoints(paymentInfo.pointsEarned));
                     setIsPaid(true);
                     props.onPaid(true);
                   }}

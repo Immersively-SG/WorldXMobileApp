@@ -1,9 +1,17 @@
 import { TouchableOpacity, Image, StyleSheet, Text } from "react-native";
+import { worldxstyleconstants } from "../../../stylesheets/worldxstylesheet";
 
 export const TouchableIconLink = (props) => {
   return (
     <TouchableOpacity
-      style={[styles.icon, { alignItems: "center" }]}
+      style={[
+        styles.icon,
+        {
+          alignItems: "center",
+          backgroundColor: worldxstyleconstants.backgroundColor,
+          aspectRatio: 1,
+        },
+      ]}
       activeOpacity={0.5}
       onPress={() => {
         props.navigation.push(props.screenName);

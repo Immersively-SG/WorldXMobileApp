@@ -1,7 +1,7 @@
 import { createSlice, combineReducers } from "@reduxjs/toolkit";
 import { RandomRangeInt } from "../components/utility/math/math";
 
-const CASHBACK_VALUES = [100, 150, 200, 250, 500];
+const CASHBACK_VALUES = [10, 15, 20, 25, 50];
 const LIMIT_VALUES = [50, 100, 150, 200, 250, 300];
 
 const loyaltyInitialState = {

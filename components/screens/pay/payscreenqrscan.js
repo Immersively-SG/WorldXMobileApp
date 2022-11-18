@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
 import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
 import { withDecay } from "react-native-reanimated";
+import EStyleSheet from "react-native-extended-stylesheet";
 
 export const PayScreenQRScan = (props) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -53,11 +54,18 @@ export const PayScreenQRScan = (props) => {
           hardwareAccelerated={true}
         />
         <TouchableShadowButton
-          style={{
-            padding: 5,
-          }}
+          style={[styles.button]}
           onPress={() => {
-            return props.onSetModalVisible(false);
+            props.onSetPayment({ dummy: "something" });
+            props.onSetModalVisible(false);
+          }}
+        >
+          <Text style={[worldxstyles.text]}>Simulate Valid QR</Text>
+        </TouchableShadowButton>
+        <TouchableShadowButton
+          style={[styles.button]}
+          onPress={() => {
+            props.onSetModalVisible(false);
           }}
         >
           <Text style={[worldxstyles.text]}>Cancel scan</Text>
@@ -66,3 +74,10 @@ export const PayScreenQRScan = (props) => {
     </Modal>
   );
 };
+
+const styles = EStyleSheet.create({
+  button: {
+    padding: "0.5rem",
+    marginBottom: "1rem",
+  },
+});

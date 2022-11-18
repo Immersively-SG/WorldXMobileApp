@@ -1,11 +1,10 @@
 import EStyleSheet from "react-native-extended-stylesheet";
-import {
-  worldxstyleconstants,
-  worldxstyles,
-} from "../../../stylesheets/worldxstylesheet";
+import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
 import * as Animatable from "react-native-animatable";
 import { RedeemSection } from "./sections/redeemsection.js";
 import { RewardsSection } from "./sections/rewardsection";
+import { PointsLogSection } from "./sections/pointssection";
+
 import React, { useState } from "react";
 import { View, Text } from "react-native";
 const titleArray = ["Rewards", "Your Rewards", "Points Log"];
@@ -44,19 +43,6 @@ export const RewardsPage = (props) => {
       </Text>
       {PageSwitcher(props.pageIndex)}
     </View>
-  );
-};
-
-const PointsLogSection = (props) => {
-  return (
-    <Animatable.View
-      style={props.style}
-      animation={"fadeInUp"}
-      duration={500}
-      useNativeDriver={true}
-    >
-      <Text style={[worldxstyles.text]}>asdsadsadsadsa</Text>
-    </Animatable.View>
   );
 };
 

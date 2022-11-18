@@ -18,20 +18,57 @@ import { TouchableShadowButton } from "../../../utility/touchable/touchableshado
 import { BackgroundOverlay } from "../../../utility/containers/backgroundoverlay";
 import * as Clipboard from "expo-clipboard";
 import { RandomString } from "../../../utility/math/math";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { toastConfig } from "../../../utility/config/toastconfig";
+
+import {
+  removeFromReward,
+  setUseReward,
+} from "../../../../features/worldxpointsslice";
 
 export const RewardsSection = (props) => {
   const rewardsArray = useSelector((state) => state.worldxpoints.reward);
   const [isRewardModalVisible, setIsRewardModalVisible] = useState(false);
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [selectedRewardData, setSelectedRewardData] = useState({});
+
   useEffect(() => {}, []);
 
   const renderItem = useCallback(({ item }) => {
     return (
-      <View style={[styles.rewardelement, worldxstyles.bordered]}>
+      <View
+        style={[
+          styles.rewardelement,
+          worldxstyles.bordered,
+          {
+            backgroundColor:
+              item.used != null
+                ? worldxstyleconstants.disabledColor
+                : worldxstyleconstants.backgroundColor,
+            borderColor:
+              item.used != null
+                ? worldxstyleconstants.disabledLineColor
+                : worldxstyleconstants.lineColor,
+          },
+        ]}
+      >
         <Image
           source={item.icon}
-          style={[styles.rewardlogo, worldxstyles.bordered]}
+          style={[
+            styles.rewardlogo,
+            worldxstyles.bordered,
+            {
+              backgroundColor:
+                item.used != null
+                  ? worldxstyleconstants.disabledColor
+                  : worldxstyleconstants.backgroundColor,
+              borderColor:
+                item.used != null
+                  ? worldxstyleconstants.disabledLineColor
+                  : worldxstyleconstants.lineColor,
+              opacity: item.used != null ? 0.3 : 1,
+            },
+          ]}
         />
         <View style={[styles.rewarddetails]}>
           <Text
@@ -39,7 +76,10 @@ export const RewardsSection = (props) => {
               worldxstyles.text,
               worldxstyles.textBold,
               worldxstyles.textSmallMedium,
-              { alignSelf: "flex-start" },
+              {
+                alignSelf: "flex-start",
+                color: item.used != null ? "grey" : "white",
+              },
             ]}
           >
             {item.name} Voucher
@@ -47,16 +87,28 @@ export const RewardsSection = (props) => {
           <View style={{ alignSelf: "flex-end" }}>
             <TouchableShadowButton
               onPress={() => {
-                setIsConfirmModalVisible(true);
+                if (item.used == null) {
+                  setIsConfirmModalVisible(true);
+                } else {
+                  setIsConfirmModalVisible(false);
+                  setIsRewardModalVisible(true);
+                }
+
                 setSelectedRewardData({
                   name: item.name + " Voucher",
                   icon: item.icon,
+                  code: item.code,
                 });
               }}
-              style={[styles.button, { alignSelf: "flex-end" }]}
+              style={[
+                styles.button,
+                {
+                  alignSelf: "flex-end",
+                },
+              ]}
             >
               <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-                Use
+                {item.used != null ? "View" : "Use"}
               </Text>
             </TouchableShadowButton>
           </View>
@@ -68,12 +120,12 @@ export const RewardsSection = (props) => {
   return (
     <Animatable.View
       useNativeDriver={true}
-      style={[props.style]}
+      style={[props.style, { flex: 1 }]}
       animation={"fadeInUp"}
       duration={500}
     >
       <FlatList
-        style={[props.style]}
+        style={[{ flex: 1 }]}
         data={rewardsArray}
         showsVerticalScrollIndicator={false}
         renderItem={renderItem}
@@ -94,6 +146,7 @@ export const RewardsSection = (props) => {
 };
 
 const ConfirmModal = (props) => {
+  const dispatch = useDispatch();
   return (
     <Modal
       animationType="fade"
@@ -123,6 +176,8 @@ const ConfirmModal = (props) => {
               onPress={() => {
                 props.handleClose(false);
                 props.handleConfirm(true);
+                //dispatch(removeFromReward(props.selectedRewardData));
+                dispatch(setUseReward(props.selectedRewardData));
               }}
             >
               <Text style={[worldxstyles.text, worldxstyles.textBold]}>
@@ -145,11 +200,6 @@ const ConfirmModal = (props) => {
   );
 };
 const RewardModal = (props) => {
-  const [code, setCode] = useState("");
-  useEffect(() => {
-    setCode(RandomString(15));
-  }, [props]);
-
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(code);
   };
@@ -193,6 +243,9 @@ const RewardModal = (props) => {
                 worldxstyles.textSmallMedium,
                 worldxstyles.textBold,
                 styles.rewardText,
+                {
+                  flexShrink: 1,
+                },
               ]}
             >
               {props.selectedRewardData.name}
@@ -203,11 +256,22 @@ const RewardModal = (props) => {
               Voucher Code
             </Text>
             <View style={[styles.rewardcodetext, worldxstyles.bordered]}>
-              <Text style={[worldxstyles.text, worldxstyles.textBold]}>
-                {code}
+              <Text
+                numberOfLines={1}
+                style={[worldxstyles.text, worldxstyles.textBold]}
+              >
+                {props.selectedRewardData.code}
               </Text>
             </View>
-            <TouchableOpacity onPress={copyToClipboard}>
+            <TouchableOpacity
+              onPress={() => {
+                Toast.show({
+                  type: "info",
+                  text1: "Voucher code copied to clipboard!",
+                });
+                copyToClipboard;
+              }}
+            >
               <Text
                 style={[
                   worldxstyles.text,
@@ -232,6 +296,7 @@ const RewardModal = (props) => {
           <Text style={[worldxstyles.text, worldxstyles.textBold]}>CLOSE</Text>
         </TouchableShadowButton>
       </View>
+      <Toast config={toastConfig} />
     </Modal>
   );
 };

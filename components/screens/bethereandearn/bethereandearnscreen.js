@@ -1,10 +1,17 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import {
   worldxstyleconstants,
   worldxstyles,
 } from "../../../stylesheets/worldxstylesheet";
 import { Emitter } from "react-native-particles";
-import { useState, useEffect, createRef } from "react";
+import { useState, useEffect, createRef, useRef } from "react";
 import MapView, { Circle, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
 import {
@@ -16,18 +23,25 @@ import {
 import * as Animatable from "react-native-animatable";
 import { RandomString } from "./../../utility/math/math";
 import AnimatedNumbers from "react-native-animated-numbers";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { Particle } from "../../utility/particle/particle";
 import EStyleSheet from "react-native-extended-stylesheet";
+import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
+import { useDispatch } from "react-redux";
+import { addToPointsLog } from "../../../features/worldxpointsslice";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 export const BeThereAndEarnScreen = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [expCirclesArray, setExpCirclesArray] = useState(null);
-  const [expCirclesDataArray, setExpCirclesDataArray] = useState(null);
-  const [isInExpCircle, setIsInExpCircle] = useState(false);
+  const expCirclesDataArray = useRef(null);
+  const isInExpCircle = useRef(false);
   const [nearestExpCircle, setNearestExpCircle] = useState(null);
-  const [currentExpCircle, setCurrentExpCircle] = useState(null);
+  const currentExpCircle = useRef(null);
+  const [currentPoints, setCurrentPoints] = useState(0);
+
+  const dispatch = useDispatch();
 
   const mapRef = createRef();
   const goToMyLocation = async (_latitude, _longitude) => {
@@ -48,12 +62,21 @@ export const BeThereAndEarnScreen = () => {
       distanceInterval: 10,
     });
 
-    const [location] = await Promise.all([locationPromise]);
+    const location = await locationPromise;
 
     setLocation(location);
 
     // const geocodePromise = Location.reverseGeocodeAsync(location.coords);
     // setGeocode(geocode);
+  };
+
+  const handleCirclePoints = () => {
+    if (isInExpCircle.current && currentExpCircle.current != null) {
+      var circlesArray = expCirclesDataArray.current;
+      circlesArray[currentExpCircle.current.index].points += 10;
+      expCirclesDataArray.current = circlesArray;
+      setCurrentPoints(circlesArray[currentExpCircle.current.index].points);
+    }
   };
 
   //////////ON MOUNT/////////////////
@@ -84,14 +107,14 @@ export const BeThereAndEarnScreen = () => {
         numCircles: 5,
         minRadius: 20,
         maxRadius: 30,
-        // minDistance: -0.00075,
-        // maxDistance: 0.00075,
-        minDistance: 0,
-        maxDistance: 0,
+        minDistance: -0.00075,
+        maxDistance: 0.00075,
+        // minDistance: 0,
+        // maxDistance: 0,
       });
 
       //generate exp circles data
-      setExpCirclesDataArray(_expCircleDataArray);
+      expCirclesDataArray.current = _expCircleDataArray;
 
       setExpCirclesArray(() => {
         return _expCircleDataArray.map((element, index) => {
@@ -110,8 +133,10 @@ export const BeThereAndEarnScreen = () => {
           );
         });
       });
+
       interval = setInterval(() => {
         updateLocation();
+        handleCirclePoints();
       }, 1000);
     })();
     return () => {
@@ -125,7 +150,7 @@ export const BeThereAndEarnScreen = () => {
 
     //check if user is in exp circle
     var isUserInAnyCircle = false;
-    expCirclesDataArray?.forEach((element) => {
+    expCirclesDataArray.current?.forEach((element) => {
       if (
         isPointWithinRadius(
           {
@@ -139,20 +164,20 @@ export const BeThereAndEarnScreen = () => {
           element.radius
         )
       ) {
-        setCurrentExpCircle(element);
+        currentExpCircle.current = element;
         isUserInAnyCircle = true;
         return;
       }
     });
 
-    setIsInExpCircle(isUserInAnyCircle);
-    if (!isUserInAnyCircle) setCurrentExpCircle(null);
+    isInExpCircle.current = isUserInAnyCircle;
+    if (!isUserInAnyCircle) currentExpCircle.current = null;
 
-    if (expCirclesDataArray == null) return;
+    if (expCirclesDataArray.current == null) return;
     //calculate details to nearest exp circle
     const nearestCirclePoint = findNearest(
       location.coords,
-      expCirclesDataArray.map((element) => {
+      expCirclesDataArray.current.map((element) => {
         return { latitude: element.latitude, longitude: element.longitude };
       })
     );
@@ -180,18 +205,21 @@ export const BeThereAndEarnScreen = () => {
       duration={1000}
       style={{ flex: 1, justifyContent: "center" }}
     >
-      <View style={[styles.container, { flex: 1, alignSelf: "stretch" }]}>
-        <Image
-          source={require("../../../assets/WorldX/Logo/worldxlogo.png")}
-          style={{
-            aspectRatio: 2,
-            resizeMode: "contain",
-            alignSelf: "flex-start",
-            height: "100%",
-            width: "100%",
-          }}
-        />
-      </View>
+      <LinearGradient
+        style={[styles.header]}
+        colors={["#000000", "transparent"]}
+        end={{ x: 1.0, y: 1.0 }}
+      >
+        <Text
+          style={[
+            worldxstyles.text,
+            worldxstyles.textMedium,
+            worldxstyles.textBold,
+          ]}
+        >
+          Be there and earn
+        </Text>
+      </LinearGradient>
       <View style={[styles.container, { flex: 5 }]}>
         <View
           style={[
@@ -204,7 +232,7 @@ export const BeThereAndEarnScreen = () => {
           <MapView
             ref={mapRef}
             style={[styles.mapContainer]}
-            customMapStyle={styles.customMapStyle}
+            customMapStyle={mapsStyle.customMapStyle}
             followsUserLocation={true}
             showsUserLocation={true}
             zoomEnabled={true}
@@ -221,7 +249,7 @@ export const BeThereAndEarnScreen = () => {
           </MapView>
         </View>
         <View style={[{ width: "100%", flex: 1 }]}>
-          {isInExpCircle && currentExpCircle ? (
+          {isInExpCircle.current && currentExpCircle.current != null ? (
             <View
               style={{
                 flex: 1,
@@ -257,7 +285,13 @@ export const BeThereAndEarnScreen = () => {
                   },
                 ]}
               >
-                <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                <Text
+                  style={[
+                    worldxstyles.text,
+                    worldxstyles.textBold,
+                    worldxstyles.textSmallMedium,
+                  ]}
+                >
                   You are in a reward location!
                 </Text>
                 <View
@@ -269,37 +303,79 @@ export const BeThereAndEarnScreen = () => {
                     },
                     worldxstyles.bordered,
                     worldxstyles.flexRow,
+                    styles.pointsContainer,
                   ]}
                 >
                   <View
                     style={[worldxstyles.flexRow, { alignItems: "center" }]}
                   >
-                    <Image
-                      source={require("../../../assets/WorldX/Logo/grablogo.png")}
-                      style={[worldxstyles.bordered, styles.merchantlogo]}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        Linking.openURL(currentExpCircle.current.url);
+                      }}
+                    >
+                      <Image
+                        source={require("../../../assets/WorldX/Logo/grablogo.png")}
+                        style={[worldxstyles.bordered, styles.merchantlogo]}
+                      />
+                    </TouchableOpacity>
                     <Text
                       style={[
                         worldxstyles.text,
                         worldxstyles.textBold,
+                        worldxstyles.textSmallMedium,
                         { textAlign: "center" },
                       ]}
                     >
-                      {currentExpCircle.name}
+                      {currentExpCircle.current.name}
                       {"\n"}Mall
                     </Text>
                   </View>
-                  <View>
+                  <View style={[{ alignItems: "center" }]}>
                     <Text style={[worldxstyles.text, worldxstyles.textBold]}>
                       Collecting Points
                     </Text>
                     <AnimatedNumbers
-                      style={[worldxstyles.text, worldxstyles.textBold]}
-                      animateToNumber={1000}
-                      r
+                      fontStyle={[
+                        worldxstyles.text,
+                        worldxstyles.textBold,
+                        worldxstyles.textSmallMedium,
+                      ]}
+                      animateToNumber={currentPoints}
+                      animationDuration={500}
                     />
+                    <TouchableShadowButton
+                      style={[styles.collectButton]}
+                      onPress={() => {
+                        dispatch(
+                          addToPointsLog({
+                            name: currentExpCircle.current.name + " Mall",
+                            points: currentPoints,
+                          })
+                        );
+                        Toast.show({
+                          type: "info",
+                          text1:
+                            "You have collected " +
+                            currentPoints +
+                            " from " +
+                            currentExpCircle.current.name +
+                            "Mall!",
+                        });
+                        expCirclesDataArray.current[
+                          currentExpCircle.current.index
+                        ].points = 0;
+                      }}
+                    >
+                      <Text style={[worldxstyles.text, worldxstyles.textBold]}>
+                        Collect
+                      </Text>
+                    </TouchableShadowButton>
                   </View>
                 </View>
+                <Text style={[worldxstyles.text]}>
+                  You will still earn points when the app is minimized.
+                </Text>
               </View>
               {/**************************** */}
               <View>
@@ -320,17 +396,10 @@ export const BeThereAndEarnScreen = () => {
               </View>
             </View>
           ) : (
-            nearestExpCircle && (
+            nearestExpCircle != null && (
               <View>
                 <View
-                  style={[
-                    worldxstyles.flexRow,
-                    {
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      padding: 10,
-                    },
-                  ]}
+                  style={[worldxstyles.flexRow, styles.notincirclecontainer]}
                 >
                   <Text
                     style={[worldxstyles.text, worldxstyles.textSmallMedium]}
@@ -422,13 +491,27 @@ const styles = EStyleSheet.create({
     aspectRatio: 1,
     backgroundColor: worldxstyleconstants.backgroundColor,
   },
+  header: { margin: "1rem" },
+  pointsContainer: {
+    padding: "1rem",
+  },
+  notincirclecontainer: {
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    padding: "1rem",
+  },
+  collectButton: {
+    padding: "0.2rem",
+  },
+});
 
+const mapsStyle = StyleSheet.create({
   customMapStyle: [
     {
       elementType: "geometry",
       stylers: [
         {
-          color: "#1d2c4d",
+          color: "#242f3e",
         },
       ],
     },
@@ -436,7 +519,7 @@ const styles = EStyleSheet.create({
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#8ec3b9",
+          color: "#746855",
         },
       ],
     },
@@ -444,61 +527,16 @@ const styles = EStyleSheet.create({
       elementType: "labels.text.stroke",
       stylers: [
         {
-          color: "#1a3646",
+          color: "#242f3e",
         },
       ],
     },
     {
-      featureType: "administrative.country",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#4b6878",
-        },
-      ],
-    },
-    {
-      featureType: "administrative.land_parcel",
+      featureType: "administrative.locality",
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#64779e",
-        },
-      ],
-    },
-    {
-      featureType: "administrative.province",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#4b6878",
-        },
-      ],
-    },
-    {
-      featureType: "landscape.man_made",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#334e87",
-        },
-      ],
-    },
-    {
-      featureType: "landscape.natural",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#023e58",
-        },
-      ],
-    },
-    {
-      featureType: "poi",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#283d6a",
+          color: "#d59563",
         },
       ],
     },
@@ -507,25 +545,16 @@ const styles = EStyleSheet.create({
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#6f9ba5",
-        },
-      ],
-    },
-    {
-      featureType: "poi",
-      elementType: "labels.text.stroke",
-      stylers: [
-        {
-          color: "#1d2c4d",
+          color: "#d59563",
         },
       ],
     },
     {
       featureType: "poi.park",
-      elementType: "geometry.fill",
+      elementType: "geometry",
       stylers: [
         {
-          color: "#023e58",
+          color: "#263c3f",
         },
       ],
     },
@@ -534,7 +563,7 @@ const styles = EStyleSheet.create({
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#3C7680",
+          color: "#6b9a76",
         },
       ],
     },
@@ -543,7 +572,16 @@ const styles = EStyleSheet.create({
       elementType: "geometry",
       stylers: [
         {
-          color: "#304a7d",
+          color: "#38414e",
+        },
+      ],
+    },
+    {
+      featureType: "road",
+      elementType: "geometry.stroke",
+      stylers: [
+        {
+          color: "#212a37",
         },
       ],
     },
@@ -552,16 +590,7 @@ const styles = EStyleSheet.create({
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#98a5be",
-        },
-      ],
-    },
-    {
-      featureType: "road",
-      elementType: "labels.text.stroke",
-      stylers: [
-        {
-          color: "#1d2c4d",
+          color: "#9ca5b3",
         },
       ],
     },
@@ -570,7 +599,7 @@ const styles = EStyleSheet.create({
       elementType: "geometry",
       stylers: [
         {
-          color: "#2c6675",
+          color: "#746855",
         },
       ],
     },
@@ -579,7 +608,7 @@ const styles = EStyleSheet.create({
       elementType: "geometry.stroke",
       stylers: [
         {
-          color: "#255763",
+          color: "#1f2835",
         },
       ],
     },
@@ -588,52 +617,25 @@ const styles = EStyleSheet.create({
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#b0d5ce",
-        },
-      ],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "labels.text.stroke",
-      stylers: [
-        {
-          color: "#023e58",
+          color: "#f3d19c",
         },
       ],
     },
     {
       featureType: "transit",
-      elementType: "labels.text.fill",
+      elementType: "geometry",
       stylers: [
         {
-          color: "#98a5be",
-        },
-      ],
-    },
-    {
-      featureType: "transit",
-      elementType: "labels.text.stroke",
-      stylers: [
-        {
-          color: "#1d2c4d",
-        },
-      ],
-    },
-    {
-      featureType: "transit.line",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#283d6a",
+          color: "#2f3948",
         },
       ],
     },
     {
       featureType: "transit.station",
-      elementType: "geometry",
+      elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#3a4762",
+          color: "#d59563",
         },
       ],
     },
@@ -642,7 +644,7 @@ const styles = EStyleSheet.create({
       elementType: "geometry",
       stylers: [
         {
-          color: "#0e1626",
+          color: "#17263c",
         },
       ],
     },
@@ -651,7 +653,16 @@ const styles = EStyleSheet.create({
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#4e6d70",
+          color: "#515c6d",
+        },
+      ],
+    },
+    {
+      featureType: "water",
+      elementType: "labels.text.stroke",
+      stylers: [
+        {
+          color: "#17263c",
         },
       ],
     },

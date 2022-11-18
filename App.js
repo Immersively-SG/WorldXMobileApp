@@ -12,12 +12,13 @@ import {
   useNavigationContainerRef,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import Toast from "react-native-toast-message";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Splashscreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { LogBox } from "react-native";
+import { toastConfig } from "./components/utility/config/toastconfig";
 
 //REDUX
 import { store } from "./store";
@@ -31,6 +32,7 @@ import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bether
 import { PayScreen } from "./components/screens/pay/payscreen.js";
 import { LoginScreen } from "./components/screens/login/loginscreen.js";
 import { RewardsScreen } from "./components/screens/rewards/rewardsscreen";
+import { SettingsScreen } from "./components/screens/settings/settings";
 
 EStyleSheet.build(); //For global variables, but STILL MUST CALL OR ELSE THE STYLESHEETS WONT WORK
 LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
@@ -93,7 +95,7 @@ export default function App() {
             style={{ width: "100%", height: "100%", resizeMode: "cover" }}
           >
             <Stack.Navigator
-              initialRouteName="Home"
+              initialRouteName="LoginScreen"
               screenOptions={{
                 headerShown: false,
               }}
@@ -107,13 +109,14 @@ export default function App() {
                 component={BeThereAndEarnScreen}
               />
               <Stack.Screen name="Pay" component={PayScreen} />
-              <Stack.Screen name="Settings" component={HomeScreen} />
+              <Stack.Screen name="Settings" component={SettingsScreen} />
             </Stack.Navigator>
             <BottomNavigator
               currentScreen={currentRouteName}
               navStateReady={navigationRef?.isReady()}
             />
           </ImageBackground>
+          <Toast config={toastConfig} />
           <StatusBar hidden />
         </NavigationContainer>
       </SafeAreaView>

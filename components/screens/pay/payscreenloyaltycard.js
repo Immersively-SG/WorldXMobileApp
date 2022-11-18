@@ -11,6 +11,7 @@ import {
   setLimitReached,
   resetLoyaltyCard,
 } from "../../../features/paymentscreenslice";
+import EStyleSheet from "react-native-extended-stylesheet";
 
 export const PayScreenLoyaltyCard = (props) => {
   const card = useRef();
@@ -177,6 +178,7 @@ export const PayScreenLoyaltyCard = (props) => {
                   worldxstyles.text,
                   worldxstyles.textMedium,
                   worldxstyles.textBold,
+                  styles.cashbackpercenttext,
                   { color: "#ac8814" },
                 ]}
               >
@@ -298,3 +300,8 @@ export const PayScreenLoyaltyCard = (props) => {
     </Animatable.View>
   );
 };
+const styles = EStyleSheet.create({
+  cashbackpercenttext: {
+    marginHorizontal: "1rem",
+  },
+});

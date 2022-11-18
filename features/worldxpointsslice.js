@@ -1,6 +1,6 @@
-import { createSlice, combineReducers } from "@reduxjs/toolkit";
-import { RandomRangeInt } from "../components/utility/math/math";
-
+import { createSlice } from "@reduxjs/toolkit";
+import { RandomString } from "../components/utility/math/math";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 const RedeemData = [
   {
     name: "Nike",
@@ -40,33 +40,82 @@ const GenerateRedeem = () => {
 };
 
 const worldxpointsInitialState = {
-  totalPoints: 20000,
+  totalPoints: 0,
+  expToNextLevel: 1000,
+  currentExp: 0,
+
   totalLevel: 0,
   pointsLog: [],
   redeem: GenerateRedeem(),
   reward: [],
+  userid: RandomString(15),
 };
 
 const worldxpointsSlice = createSlice({
   name: "worldxpoints",
   initialState: worldxpointsInitialState,
   reducers: {
+    //takes into account negative values
     incrementPoints: (state, action) => {
-      state.totalPoints += action.payload;
+      if (parseInt(action.payload) > 0) {
+        state.currentExp += parseInt(action.payload);
+
+        //level up
+        while (state.currentExp >= state.expToNextLevel) {
+          ++state.totalLevel;
+          state.currentExp -= state.expToNextLevel;
+          state.expToNextLevel += 500;
+        }
+      }
+
+      state.totalPoints += parseInt(action.payload);
       return state;
     },
-    incrementLevel: (state) => {
-      state.totalLevel += action.payload;
+    setLevel: (state) => {
+      state.totalLevel = action.payload;
       return state;
     },
     addToReward: (state, action) => {
       state.reward.push(action.payload);
       return state;
     },
+
+    removeFromReward: (state, action) => {
+      //remove the item from the array
+      const index = state.reward.findIndex((element) => {
+        return action.payload.code === element.code;
+      });
+      if (index > -1) {
+        state.reward.splice(index, 1);
+      }
+
+      return state;
+    },
+    setUseReward: (state, action) => {
+      //remove the item from the array
+      const index = state.reward.findIndex((element) => {
+        return action.payload.code === element.code;
+      });
+      if (index > -1) {
+        state.reward[index].used = true;
+      }
+
+      return state;
+    },
+    addToPointsLog: (state, action) => {
+      state.pointsLog.unshift(action.payload);
+      return state;
+    },
   },
 });
 
-export const { incrementPoints, incrementLevel, addToReward } =
-  worldxpointsSlice.actions;
+export const {
+  incrementPoints,
+  setLevel,
+  addToReward,
+  addToPointsLog,
+  removeFromReward,
+  setUseReward,
+} = worldxpointsSlice.actions;
 
 export default worldxpointsSlice.reducer;

@@ -1,7 +1,7 @@
 export const MenuIconsDataArray = [
   {
     name: "REWARDS",
-    image: require("../../../assets/WorldX/Icons/UI/MarketplaceWhite.png"),
+    image: require("../../../assets/WorldX/Icons/UI/MarketPlaceWhite.png"),
     screenName: "Rewards",
   },
   {
@@ -11,7 +11,7 @@ export const MenuIconsDataArray = [
   },
   {
     name: "PAY",
-    image: require("../../../assets/WorldX/Icons/UI/MarketTrends.png"),
+    image: require("../../../assets/WorldX/Icons/UI/Pay_Icon.png"),
     screenName: "Pay",
   },
   {
