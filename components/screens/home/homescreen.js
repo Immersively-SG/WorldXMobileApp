@@ -185,10 +185,16 @@ export const HomeScreen = ({ navigation }) => {
                     borderColor={worldxstyleconstants.lineColor}
                     aniamtionType={"decay"}
                   ></Progress.Bar>
-                  <Text style={[worldxstyles.text, worldxstyles.textVerySmall]}>
-                    {"Points to next level: " +
-                      (parseInt(worldxpoints.expToNextLevel) -
-                        parseInt(worldxpoints.currentExp))}
+                  <Text
+                    style={[
+                      worldxstyles.text,
+                      worldxstyles.textVerySmall,
+                      { textAlign: "center" },
+                    ]}
+                  >
+                    {parseInt(worldxpoints.expToNextLevel) -
+                      parseInt(worldxpoints.currentExp)}
+                    /{parseInt(worldxpoints.expToNextLevel)}
                   </Text>
                 </View>
               </View>

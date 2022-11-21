@@ -19,6 +19,7 @@ import * as Font from "expo-font";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { LogBox } from "react-native";
 import { toastConfig } from "./components/utility/config/toastconfig";
+import { useFonts } from "expo-font";
 
 //REDUX
 import { store } from "./store";
@@ -34,6 +35,12 @@ import { LoginScreen } from "./components/screens/login/loginscreen.js";
 import { RewardsScreen } from "./components/screens/rewards/rewardsscreen";
 import { SettingsScreen } from "./components/screens/settings/settings";
 
+//FONTS
+import {
+  MPLUS1p_400Regular,
+  MPLUS1p_700Bold,
+} from "@expo-google-fonts/m-plus-1p";
+
 EStyleSheet.build(); //For global variables, but STILL MUST CALL OR ELSE THE STYLESHEETS WONT WORK
 LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
 
@@ -45,6 +52,11 @@ export default function App() {
   const [currentRouteName, setCurrentRouteName] = useState("");
 
   const [appIsReady, setAppIsReady] = useState(false);
+
+  const [fontsLoaded] = useFonts({
+    MPLUS1p_400Regular,
+    MPLUS1p_700Bold,
+  });
   //on initial render
   useEffect(() => {
     async function prepare() {

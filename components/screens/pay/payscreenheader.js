@@ -1,7 +1,6 @@
 import { worldxstyles } from "../../../stylesheets/worldxstylesheet";
 import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Feather } from "@expo/vector-icons";
 
 export const PayScreenHeader = (props) => {
   return (
@@ -31,8 +30,6 @@ export const PayScreenHeader = (props) => {
         >
           {props.label}
         </Text>
-
-        <Feather name="info" size={30} color="white" />
       </LinearGradient>
       <Text style={[worldxstyles.text]}>
         {props.isRenderSubtext &&

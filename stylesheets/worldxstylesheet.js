@@ -25,8 +25,14 @@ export const worldxstyles = EStyleSheet.create({
     textAlignVertical: "bottom",
   },
   text: {
+    fontFamily: "MPLUS1p_400Regular",
     color: "#ffffff",
   },
+  textHeader: {
+    fontFamily: "MPLUS1p_400Regular",
+    color: "#ffffff",
+  },
+
   textVerySmall: {
     fontSize: "0.7rem",
   },
@@ -40,7 +46,7 @@ export const worldxstyles = EStyleSheet.create({
     fontSize: "3rem",
   },
   textBold: {
-    fontWeight: "bold",
+    fontFamily: "MPLUS1p_700Bold",
   },
   textCenter: {
     textAlign: "center",
