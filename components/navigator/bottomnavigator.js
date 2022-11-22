@@ -10,6 +10,7 @@ export const BottomNavigator = (props) => {
   const navigation = useNavigation();
   return (
     props.currentScreen != "Home" &&
+    props.currentScreen != "SplashScreen" &&
     props.navStateReady == true && (
       <View style={styles.bottomTab}>
         <TouchableOpacity

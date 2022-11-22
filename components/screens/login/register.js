@@ -26,6 +26,9 @@ export const Register = (props) => {
     >
       <View style={[props.style]}>
         <View style={[props.modalContentStyle]}>
+          <Text style={worldxstyles.text}>
+            Register your username and password
+          </Text>
           <TextInput
             ref={userRef}
             style={[styles.input, worldxstyles.bordered]}

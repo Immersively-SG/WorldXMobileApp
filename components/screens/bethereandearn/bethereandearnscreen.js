@@ -28,7 +28,10 @@ import { Particle } from "../../utility/particle/particle";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { TouchableShadowButton } from "../../utility/touchable/touchableshadowbutton";
 import { useDispatch } from "react-redux";
-import { addToPointsLog } from "../../../features/worldxpointsslice";
+import {
+  addToPointsLog,
+  incrementPoints,
+} from "../../../features/worldxpointsslice";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 export const BeThereAndEarnScreen = () => {
@@ -353,6 +356,7 @@ export const BeThereAndEarnScreen = () => {
                             points: currentPoints,
                           })
                         );
+                        dispatch(incrementPoints(currentPoints));
                         Toast.show({
                           type: "info",
                           text1:
@@ -378,22 +382,6 @@ export const BeThereAndEarnScreen = () => {
                 </Text>
               </View>
               {/**************************** */}
-              <View>
-                <Emitter
-                  numberOfParticles={1}
-                  emissionRate={1}
-                  interval={0}
-                  particleLife={2000}
-                  direction={-90}
-                  spread={20}
-                  speed={15}
-                  autoStart={true}
-                  infiniteLoop={true}
-                  gravity={1}
-                >
-                  <Particle />
-                </Emitter>
-              </View>
             </View>
           ) : (
             nearestExpCircle != null && (

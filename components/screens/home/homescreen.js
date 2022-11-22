@@ -192,13 +192,18 @@ export const HomeScreen = ({ navigation }) => {
                       { textAlign: "center" },
                     ]}
                   >
-                    {parseInt(worldxpoints.expToNextLevel) -
-                      parseInt(worldxpoints.currentExp)}
-                    /{parseInt(worldxpoints.expToNextLevel)}
+                    {parseInt(worldxpoints.currentExp)}/
+                    {parseInt(worldxpoints.expToNextLevel)}
                   </Text>
                 </View>
               </View>
               <View style={[{ flex: 1 }, worldxstyles.container]}>
+                <Text
+                  numberOfLines={1}
+                  style={[worldxstyles.text, { textAlign: "center" }]}
+                >
+                  Wallet Address
+                </Text>
                 <View
                   style={[
                     { flex: 1, alignItems: "center", width: "70%" },
@@ -207,7 +212,11 @@ export const HomeScreen = ({ navigation }) => {
                 >
                   <Text
                     numberOfLines={1}
-                    style={[worldxstyles.text, { textAlign: "right" }]}
+                    style={[
+                      worldxstyles.text,
+                      styles.walletid,
+                      { textAlign: "right" },
+                    ]}
                   >
                     {worldxpoints.userid}
                   </Text>
@@ -280,5 +289,8 @@ const styles = EStyleSheet.create({
   },
   progressbar: {
     marginVertical: "0.2rem",
+  },
+  walletid: {
+    paddingLeft: "0.5rem",
   },
 });
