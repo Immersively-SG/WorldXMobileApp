@@ -1,5 +1,5 @@
 import { Image, Text, TextInput, View, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EStyleSheet from "react-native-extended-stylesheet";
 import {
   worldxstyleconstants,
@@ -14,6 +14,19 @@ export const LoginScreen = (props) => {
   const [passwordLength, setPasswordLength] = useState(0);
 
   const [isRegister, setIsRegister] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  useEffect(() => {
+    if (usernameLength > 0 && passwordLength > 0) {
+      setErrorText("");
+    } else if (usernameLength == 0 && passwordLength == 0) {
+      setErrorText("Please input a username and a password!");
+    } else if (usernameLength == 0) {
+      setErrorText("Please input a username!");
+    } else if (passwordLength == 0) {
+      setErrorText("Please input a password!");
+    }
+  }, [usernameLength, passwordLength]);
+
   return (
     <Animatable.View
       useNativeDriver={true}
@@ -40,6 +53,10 @@ export const LoginScreen = (props) => {
           setPasswordLength(text.length);
         }}
       />
+
+      <Text style={[worldxstyles.text, { textAlign: "center" }]}>
+        {errorText}
+      </Text>
 
       <TouchableShadowButton
         style={[styles.buttons]}
