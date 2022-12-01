@@ -27,6 +27,15 @@ export const LoginScreen = (props) => {
     }
   }, [usernameLength, passwordLength]);
 
+  //if user presses back on this screen, exit app
+  useEffect(
+    () =>
+      props.navigation.addListener("beforeRemove", (e) => {
+        BackHandler.exitApp();
+      }),
+    [props.navigation]
+  );
+
   return (
     <Animatable.View
       useNativeDriver={true}

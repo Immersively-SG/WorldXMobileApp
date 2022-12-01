@@ -152,22 +152,19 @@ export const HomeScreen = ({ navigation }) => {
             >
               <View style={[{ flex: 1 }, worldxstyles.container]}>
                 <View style={[{ flex: 1 }]}>
-                  <View
+                  <Image
+                    source={require("../../../assets/WorldX/Icons/character_hud.png")}
                     style={[
-                      { aspectRatio: 1, height: "70%", width: "70%" },
                       worldxstyles.bordered,
-                    ]}
-                  >
-                    <Image
-                      source={require("../../../assets/WorldX/Icons/passport.png")}
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                        resizeMode: "contain",
+                      {
+                        height: "70%",
+                        width: "70%",
                         aspectRatio: 1,
-                      }}
-                    ></Image>
-                  </View>
+                        resizeMode: "cover",
+                      },
+                    ]}
+                  />
+
                   <View style={[worldxstyles.flexRow, { alignSelf: "center" }]}>
                     <Text style={[worldxstyles.text, worldxstyles.alignBottom]}>
                       Lv

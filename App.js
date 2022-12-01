@@ -3,6 +3,7 @@ import {
   ImageBackground,
   SafeAreaView,
   StatusBar,
+  Text,
 } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import * as React from "react";
@@ -33,13 +34,14 @@ import { BeThereAndEarnScreen } from "./components/screens/bethereandearn/bether
 import { PayScreen } from "./components/screens/pay/payscreen.js";
 import { LoginScreen } from "./components/screens/login/loginscreen.js";
 import { RewardsScreen } from "./components/screens/rewards/rewardsscreen";
-import { SettingsScreen } from "./components/screens/settings/settings";
+import { UploadNFT } from "./components/screens/uploadnft/uploadnft";
 
 //FONTS
 import {
   MPLUS1p_400Regular,
   MPLUS1p_700Bold,
 } from "@expo-google-fonts/m-plus-1p";
+import { worldxstyles } from "./stylesheets/worldxstylesheet";
 
 EStyleSheet.build(); //For global variables, but STILL MUST CALL OR ELSE THE STYLESHEETS WONT WORK
 LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
@@ -121,13 +123,23 @@ export default function App() {
                 component={BeThereAndEarnScreen}
               />
               <Stack.Screen name="Pay" component={PayScreen} />
-              <Stack.Screen name="Settings" component={SettingsScreen} />
+              <Stack.Screen name="UploadNFT" component={UploadNFT} />
             </Stack.Navigator>
             <BottomNavigator
               currentScreen={currentRouteName}
               navStateReady={navigationRef?.isReady()}
             />
           </ImageBackground>
+          <Text
+            style={[
+              worldxstyles.text,
+              worldxstyles.textSmallMedium,
+              worldxstyles.textBold,
+              styles.prototypelabel,
+            ]}
+          >
+            Prototype
+          </Text>
           <Toast config={toastConfig} />
           <StatusBar hidden />
         </NavigationContainer>
@@ -144,6 +156,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  prototypelabel: {
+    position: "absolute",
+    opacity: 0.5,
+    bottom: 0,
   },
 });
 

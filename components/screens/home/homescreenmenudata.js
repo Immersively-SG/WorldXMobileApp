@@ -15,8 +15,8 @@ export const MenuIconsDataArray = [
     screenName: "Pay",
   },
   {
-    name: "SETTINGS",
-    image: require("../../../assets/WorldX/Icons/UI/Settings.png"),
-    screenName: "Settings",
+    name: "UPLOAD NFT",
+    image: require("../../../assets/WorldX/Logo/refinable.png"),
+    screenName: "UploadNFT",
   },
 ];
